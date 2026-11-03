@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generator Rancangan Bahan Ajar</title>
+<meta name="description" content="Generator dokumen rancangan bahan ajar digital SMK: identitas, deskripsi, flowchart, rencana implementasi, dan storyboard. Ekspor Word dan PDF.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style id="pageStyle">@page{size:A4;margin:25.4mm}</style>
+<style>
+:root{
+  --navy:#12355B; --blue:#1E4E8C; --blue2:#2E75B6; --sky:#DEEBF7; --amber:#F5A524; --amber-d:#C77F00;
+  --ink:#1B2433; --muted:#5D6B82; --line:#D7DEE8; --bg:#EEF2F7; --card:#FFFFFF; --ok:#1E8E5A; --warn:#B4540A; --red:#C0392B;
+  --violet:#6D3FD8; --r:12px; --shadow:0 1px 2px rgba(16,32,64,.06),0 6px 20px rgba(16,32,64,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"Plus Jakarta Sans","Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:14.5px;display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+.muted{color:var(--muted)} .small{font-size:12.5px}
+code,kbd{font-family:Consolas,"Courier New",monospace;font-size:.88em;background:#EEF2F7;border:1px solid var(--line);border-radius:5px;padding:0 4px}
+
+/* ---------- topbar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 18px;background:linear-gradient(110deg,var(--navy),var(--blue) 70%,#2C64A8);color:#fff;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand h1{font-size:18px;margin:0;letter-spacing:.2px}
+.brand p{margin:2px 0 0;font-size:12px;opacity:.8}
+.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.save-state{font-size:12px;opacity:.85;margin-right:6px}
+.save-state.warn{color:#FFD58A;opacity:1}
+
+/* ---------- tombol ---------- */
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 14px;border-radius:10px;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:#B8C4D6;transform:translateY(-1px)}
+.btn:active{transform:none}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:8px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:#173F73}
+.btn.ghost{background:transparent}
+.btn.ghost-light{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:#fff}
+.btn.ghost-light:hover{background:rgba(255,255,255,.22)}
+.btn.ai{background:linear-gradient(120deg,#7B4DFF,#5B2FC9);border-color:#5B2FC9;color:#fff}
+.btn.ai small{font-weight:500;opacity:.85;font-size:11px}
+.btn.tpl{background:#FFF6E3;border-color:#F2CF84;color:#7A4B00}
+.btn.danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn.danger-ghost{background:#fff;color:var(--red);border-color:#F0C3BD}
+.btn.add{width:100%;justify-content:center;border-style:dashed;background:#F7FAFE;margin-top:10px;padding:12px}
+.icon-btn{border:0;background:transparent;width:30px;height:30px;border-radius:8px;color:var(--muted);display:inline-grid;place-items:center}
+.icon-btn:hover{background:#EEF2F7;color:var(--ink)}
+.btn:focus-visible,.icon-btn:focus-visible,.step:focus-visible,.imgzone:focus-visible{outline:3px solid #9DC3E6;outline-offset:2px}
+
+/* ---------- steps ---------- */
+.steps{display:flex;gap:6px;padding:10px 18px;background:#fff;border-bottom:1px solid var(--line);overflow-x:auto}
+.step{display:flex;align-items:center;gap:8px;border:1px solid transparent;background:transparent;padding:6px 12px 6px 6px;border-radius:999px;color:var(--muted);font-weight:600}
+.step b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#EEF2F7;color:var(--blue);font-size:13px}
+.step:hover{background:#F4F7FB}
+.step.active{background:var(--sky);color:var(--navy);border-color:#BFD7EE}
+.step.active b{background:var(--blue);color:#fff}
+.badge{font-style:normal;font-size:11px;background:#E8F5EE;color:var(--ok);padding:1px 6px;border-radius:999px;margin-left:4px}
+
+/* ---------- layout ---------- */
+.layout{flex:1;display:grid;grid-template-columns:minmax(420px,46%) minmax(0,1fr);min-height:0;height:calc(100vh - 118px)}
+.editor{overflow-y:auto;padding:18px 20px 40px;background:var(--bg)}
+.preview{display:flex;flex-direction:column;min-height:0;min-width:0;background:#DCE2EA;border-left:1px solid var(--line)}
+.pane{display:none;background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:18px 20px 16px;max-width:860px;margin:0 auto}
+.pane.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.pane-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.pane-head h2{font-size:17px;margin:0;color:var(--navy)}
+.tools{display:flex;gap:6px}
+.pane-nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+label{display:block;font-weight:600;font-size:13px;color:#33415A;margin:10px 0 0}
+label small{font-weight:500;color:var(--muted)}
+label > input:not([type=checkbox]), label > select, label > textarea{display:block;width:100%;margin-top:5px}
+input:not([type=checkbox]),select,textarea{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;font-weight:400;font-size:14px;transition:border-color .15s, box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px rgba(46,117,182,.15)}
+textarea{resize:vertical;line-height:1.5}
+textarea.big{width:100%;margin-top:6px}
+textarea.mono{font-family:Consolas,"Cascadia Mono","Courier New",monospace;font-size:13px;white-space:pre;overflow-x:auto;tab-size:2}
+textarea:disabled{background:#F4F6F9;color:#8A96A8}
+.req{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.hint{font-size:12.5px;color:var(--muted);margin:4px 0 0;line-height:1.5}
+.counter{text-align:right;font-size:12px;color:var(--muted);margin-top:4px}
+.sub{margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:12px;background:#FAFBFD}
+.sub-head{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px}
+.row-extra{display:grid;grid-template-columns:1fr 1.4fr 32px;gap:8px;margin-bottom:6px}
+.quick{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;padding:12px;border-radius:10px;background:linear-gradient(120deg,#F6F2FF,#FFF8EA)}
+.quick .btn{flex:1;justify-content:center}
+.welcome{background:linear-gradient(120deg,#EAF3FF,#F6F2FF);border:1px solid #D3E2F7;border-radius:10px;padding:12px 16px;margin-bottom:12px}
+.welcome h3{margin:0 0 6px;font-size:15px;color:var(--navy)}
+.welcome ol{margin:0 0 8px;padding-left:20px;line-height:1.6;font-size:13.5px}
+.help{background:#F7FAFE;border:1px solid #DCE7F5;border-radius:10px;padding:8px 12px;margin:6px 0 4px;font-size:13px}
+.help summary{cursor:pointer;font-weight:700;color:var(--blue)}
+.help ul{margin:6px 0 2px;padding-left:18px;line-height:1.6}
+.flow-grid{grid-template-columns:1.05fr 1fr;align-items:start}
+.lbl{font-weight:600;font-size:13px;color:#33415A;margin:10px 0 5px}
+.flow-thumb{border:1px solid var(--line);border-radius:10px;min-height:160px;max-height:360px;overflow:auto;background:#fff;display:grid;place-items:center;padding:6px}
+.flow-thumb img{max-width:100%;display:block}
+.mt{margin-top:10px}
+.sw{display:inline-flex;align-items:center;gap:7px;font-weight:600;cursor:pointer;margin:0}
+.sw input{width:16px;height:16px;accent-color:var(--blue)}
+.sw.inline,.inline{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:600}
+.w60{width:64px!important;display:inline-block!important;margin:0!important}
+#flowNarasiWrap .auto-view{display:none}
+#flowNarasiWrap.is-auto .auto-view{display:block}
+#flowNarasiWrap.is-auto .manual-view{display:none}
+.manual-view{width:100%}
+.auto-view pre{white-space:pre-wrap;font-family:inherit;font-size:13px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:10px;margin:0 0 8px;max-height:260px;overflow:auto;line-height:1.5}
+.right-end{display:flex;align-items:flex-end;justify-content:flex-end}
+
+/* jadwal editor */
+.jed-scroll{overflow-x:auto}
+.jed{border-collapse:collapse;width:100%;font-size:13px;background:#fff}
+.jed th,.jed td{border:1px solid var(--line);padding:4px;text-align:center}
+.jed th{background:#EEF3FA;font-size:12px}
+.jed td:nth-child(2){min-width:190px}
+.jed textarea{width:100%;border:0;padding:4px;resize:vertical;font-size:13px;box-shadow:none}
+.jed input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue)}
+.jed .acts{white-space:nowrap}
+.jed .acts .icon-btn{width:24px;height:24px}
+
+/* storyboard editor */
+.empty{padding:22px;text-align:center;border:1px dashed var(--line);border-radius:10px;color:var(--muted);margin-top:12px}
+.scard{border:1px solid var(--line);border-radius:12px;margin-top:10px;background:#fff;overflow:hidden}
+.scard[open]{box-shadow:var(--shadow);border-color:#BFD0E6}
+.scard summary{list-style:none;display:flex;align-items:center;gap:10px;padding:9px 10px;cursor:pointer;background:#F7FAFE}
+.scard summary::-webkit-details-marker{display:none}
+.snum{width:26px;height:26px;border-radius:8px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.stitle{flex:1;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip{font-size:11px;padding:2px 8px;border-radius:999px;background:#FFF1E0;color:var(--warn);flex:none}
+.chip.ok{background:#E8F5EE;color:var(--ok)}
+.sacts{display:flex;flex:none}
+.sbody{padding:4px 14px 14px}
+.imgbox{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-top:12px;align-items:start}
+.imgzone{border:2px dashed #BFD0E6;border-radius:10px;aspect-ratio:16/9;display:grid;place-items:center;text-align:center;color:var(--muted);background:#F7FAFE;cursor:pointer;overflow:hidden;font-size:13px}
+.imgzone img{width:100%;height:100%;object-fit:cover;display:block}
+.imgzone.drag{border-color:var(--blue2);background:#EAF3FF}
+.imgacts{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.imgacts .mini{margin:2px 0 0;width:100%}
+.grid-narasi{display:grid;grid-template-columns:200px 1fr;gap:0 12px}
+fieldset{border:1px solid var(--line);border-radius:10px;margin:12px 0 0;padding:4px 12px 12px}
+legend{font-weight:700;font-size:13px;color:var(--navy);padding:0 6px}
+.irow{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:start;margin-top:8px}
+.irow .sw{padding-top:7px}
+.irow.off .sw span{color:#8A96A8}
+.irow textarea{width:100%}
+.scene-ai{margin-top:12px;text-align:right}
+
+/* ekspor */
+.export-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.xcard{border:1px solid var(--line);background:#fff;border-radius:12px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:4px;transition:.15s}
+.xcard:hover{border-color:var(--blue2);box-shadow:var(--shadow);transform:translateY(-2px)}
+.xcard .xi{font-size:26px}
+.xcard small{color:var(--muted)}
+#btnDocx2{background:linear-gradient(135deg,#EAF3FF,#fff)}
+.checklist ul{list-style:none;margin:6px 0 0;padding:0;font-size:13px;columns:2;column-gap:18px}
+.checklist li{padding:3px 0;cursor:pointer;break-inside:avoid}
+.checklist li.ok{color:var(--ok)}
+.checklist li.no{color:var(--warn)}
+.prog{height:8px;border-radius:99px;background:#E6EBF2;overflow:hidden}
+.prog div{height:100%;background:linear-gradient(90deg,#2E75B6,#1E8E5A)}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- pratinjau ---------- */
+.pv-bar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line)}
+.pv-bar select{margin-left:auto;padding:5px 8px;font-size:13px}
+.paper-wrap{flex:1;overflow:auto;padding:14px}
+.paper{background:#fff;margin:0 auto;box-shadow:0 2px 6px rgba(0,0,0,.12),0 12px 40px rgba(0,0,0,.08);padding:96px 96px 110px;width:794px;font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;font-size:14.67px;line-height:1.38;color:#000}
+.paper table{border-collapse:collapse;width:100%}
+.paper .outer{border:1.3px solid #000}
+.paper .outer > tbody > tr > td{border:1.3px solid #000;padding:2px 7px;vertical-align:top}
+.paper .sech{background:#C6D9F1;font-weight:700;padding-left:30px!important;cursor:pointer}
+.paper .secb{cursor:pointer}
+.paper .secb:hover,.paper .sech:hover{outline:2px solid rgba(46,117,182,.35);outline-offset:-2px}
+.paper p{margin:0}
+.paper .j,.paper p.j{text-align:justify}
+.paper .gap{height:1.2em}
+.paper .indent{padding-left:24px}
+.paper ul.dl{margin:0;padding-left:48px}
+.paper ul.dl li{list-style:disc}
+.paper ul.dl li.l2{margin-left:24px;list-style:circle}
+.paper ul.dl.sm{padding-left:18px}
+.paper .idl{margin:8px 0 6px;padding-left:48px}
+.paper .idl li{list-style:disc;margin-bottom:15px}
+.paper .idl .v{margin-top:0}
+.paper .ph{color:#9AA5B5;font-style:italic}
+.paper .flowimg{display:block;max-width:100%;margin:6px auto 12px}
+.paper .jt{margin-left:4px;width:calc(100% - 8px)}
+.paper .jt th,.paper .jt td{border:1.3px solid #000;padding:5px 6px;font-size:14.67px}
+.paper .jt th{font-weight:700;text-align:center}
+.paper .jt td.b,.paper .b{font-weight:700}
+.paper .c{text-align:center}
+.paper .sb{margin:8px 0 18px;cursor:pointer;table-layout:fixed}
+.paper .sb td{border:1px solid #000;padding:2px 6px;vertical-align:top}
+.paper .sbh{background:#FFFF00;text-align:center;font-weight:700;font-size:16px}
+.paper .scene{background:#DCE6F2}
+.paper .treat{background:#FBE4D5}
+.paper .visual{background:#EDEDED}
+.paper .narasi{background:#FFF2CC}
+.paper .narasi.big{font-size:17px}
+.paper .narasi.tall{height:110px}
+.paper .suara{background:#DEEAF6}
+.paper .inter{background:#E2EFD9}
+.paper .inter.dis{color:#000}
+.paper .sbimg{display:block;width:100%;margin:10px 0 2px}
+.paper .imgph{margin:10px 0 4px;border:2px dashed #B9C0C9;padding:26px 10px;text-align:center;color:#7B8494;background:#F6F6F6;font-size:13px}
+
+/* ---------- modal & toast ---------- */
+.modal{position:fixed;inset:0;background:rgba(14,24,40,.5);display:grid;place-items:center;z-index:50;padding:16px}
+.modal.hidden{display:none}
+.modal-card{background:#fff;border-radius:14px;width:min(520px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:pop .18s ease}
+.modal-card.wide{width:min(760px,100%)}
+@keyframes pop{from{transform:scale(.97);opacity:0}to{transform:none;opacity:1}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+.modal-head h3{margin:0;font-size:16px;color:var(--navy)}
+.modal-body{padding:14px 18px;overflow:auto;line-height:1.55}
+.modal-body textarea{width:100%;font-size:13px}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--line);flex-wrap:wrap}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.ck{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:0;font-weight:600}
+.ck input{width:16px;height:16px;accent-color:var(--violet)}
+.note{background:#FFF6E3;border:1px solid #F2CF84;border-radius:9px;padding:8px 10px;font-size:13px}
+.steps-mini{padding-left:20px;margin:4px 0 8px}
+.row-right{display:flex;justify-content:flex-end;margin-top:6px}
+.ai-run{display:flex;gap:14px;align-items:center;padding:6px 0}
+.spinner{width:34px;height:34px;border-radius:50%;border:4px solid #E5DDFB;border-top-color:var(--violet);animation:spin 1s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-steps{margin:10px 0 0;padding-left:20px;color:var(--muted);font-size:13px}
+.ai-steps li.act{color:var(--violet);font-weight:700}
+.ai-steps li.ok{color:var(--ok)}
+.ai-steps li.ok::marker{content:"✓  "}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:60;align-items:center;pointer-events:none}
+.toast-item{background:#1B2433;color:#fff;padding:10px 16px;border-radius:10px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:.3s;max-width:92vw}
+.toast-item.ok{background:#14613F}
+.toast-item.warn{background:#8A3B05}
+.toast-item.out{opacity:0;transform:translateY(8px)}
+.credit{text-align:center;font-size:11.5px;color:var(--muted);padding:6px;background:#fff;border-top:1px solid var(--line)}
+.mswitch{display:none}
+
+/* ---------- responsif ---------- */
+@media (max-width:980px){
+  .layout{grid-template-columns:minmax(0,1fr);height:auto}
+  .editor{padding:12px 10px 90px}
+  body[data-mview="form"] .preview{display:none}
+  body[data-mview="preview"] .editor{display:none}
+  body[data-mview="preview"] .preview{min-height:calc(100vh - 120px)}
+  .mswitch{display:flex;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:#fff;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.2);padding:4px;z-index:40}
+  .mswitch button{border:0;background:transparent;padding:9px 16px;border-radius:999px;font-weight:700;color:var(--muted)}
+  .mswitch button.active{background:var(--blue);color:#fff}
+  .credit{padding-bottom:70px}
+  .brand p{display:none}
+  .top-actions .save-state{display:none}
+}
+@media (max-width:620px){
+  .grid2,.flow-grid,.imgbox,.grid-narasi,.export-cards,.checks{grid-template-columns:1fr}
+  .irow{grid-template-columns:1fr}
+  .checklist ul{columns:1}
+  .step span{display:none}
+  .step{padding:4px}
+  .top-actions .btn{padding:7px 10px;font-size:13px}
+}
+
+/* ---------- cetak ---------- */
+@media print{
+  html,body{height:auto!important;min-height:0!important}
+  body{background:#fff;display:block}
+  .topbar,.steps,.editor,.pv-bar,.mswitch,.credit,.modal,.toast{display:none!important}
+  .layout{display:block;height:auto}
+  .preview{display:block!important;background:#fff;border:0}
+  .paper-wrap{overflow:visible;padding:0}
+  .paper{zoom:1!important;width:auto!important;padding:0;box-shadow:none}
+  .paper .secb:hover,.paper .sech:hover{outline:0}
+  .paper .imgph{display:none}
+  .paper .ph{color:#999}
+  .paper .sb tr{break-inside:avoid}
+  .paper .sech{break-after:avoid}
+  .paper .jt tr{break-inside:avoid}
+  .paper .sb:last-child{margin-bottom:2px}
+  .paper .flowimg{break-inside:avoid}
+}
+
+</style>
+</head>
+<body data-mview="form">
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 40 40" width="38" height="38"><rect x="3" y="5" width="26" height="31" rx="4" fill="#fff" opacity=".95"/><rect x="8" y="11" width="16" height="3" rx="1.5" fill="#1E4E8C"/><rect x="8" y="17" width="12" height="3" rx="1.5" fill="#9DC3E6"/><rect x="8" y="23" width="14" height="3" rx="1.5" fill="#9DC3E6"/><circle cx="30" cy="28" r="8" fill="#F5A524"/><path d="M26.5 28.2l2.4 2.4 4.6-5" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><h1>Generator Rancangan Bahan Ajar</h1><p>Identitas · Deskripsi · Flowchart · Rencana Implementasi · Storyboard</p></div>
+  </div>
+  <div class="top-actions">
+    <span id="saveState" class="save-state">Siap</span>
+    <button id="btnContoh" class="btn ghost-light">📂 Muat Contoh</button>
+    <button class="btn ai" data-ai="all">✨ Isi Otomatis AI</button>
+    <button id="btnDocx" class="btn primary">⬇ Unduh Word</button>
+  </div>
+</header>
+
+<nav class="steps" id="steps" aria-label="Tahapan">
+  <button class="step" data-tab="identitas"><b>A</b><span>Identitas</span></button>
+  <button class="step" data-tab="deskripsi"><b>B</b><span>Deskripsi</span></button>
+  <button class="step" data-tab="alur"><b>C</b><span>Flowchart</span></button>
+  <button class="step" data-tab="implementasi"><b>D</b><span>Implementasi</span></button>
+  <button class="step" data-tab="storyboard"><b>E</b><span>Storyboard</span></button>
+  <button class="step" data-tab="ekspor"><b>⬇</b><span>Unduh <i id="doneBadge" class="badge">0%</i></span></button>
+</nav>
+
+<main class="layout">
+  <section class="editor" id="editor">
+
+    <!-- A. IDENTITAS -->
+    <div class="pane" data-pane="identitas">
+      <div class="welcome" id="welcome">
+        <h3>👋 Mulai dari sini</h3>
+        <ol>
+          <li>Isi <b>identitas</b> bahan ajar di bawah (judul, jenis, program keahlian, cakupan).</li>
+          <li>Klik <b>⚡ Isi dengan Templat</b> (tanpa internet) atau <b>✨ Isi dengan AI</b>.</li>
+          <li>Rapikan tiap bagian, lalu unggah <b>gambar storyboard</b> (prompt gambar sudah disediakan).</li>
+          <li>Unduh dokumen <b>Word</b> atau <b>PDF</b>.</li>
+        </ol>
+        <button class="btn sm ghost" onclick="document.getElementById('btnContoh').click()">Lihat contoh jadi</button>
+      </div>
+      <div class="pane-head"><h2>A. Identitas Bahan Ajar</h2></div>
+      <label>Judul bahan ajar <span class="req">*</span><input data-bind="identitas.judul" placeholder="Contoh: Simulasi Penanganan Surat Masuk"></label>
+      <div class="grid2">
+        <label>Jenis bahan ajar<select id="selJenis" data-bind="identitas.jenis"></select></label>
+        <label>Fase / kelas<select id="selKelas" data-bind="identitas.kelas"></select></label>
+      </div>
+      <label>Program keahlian<input list="dlProgram" data-bind="identitas.program" placeholder="Ketik atau pilih, mis. Manajemen Perkantoran dan Layanan Bisnis"><datalist id="dlProgram"></datalist></label>
+      <label>Cakupan materi<textarea rows="3" data-bind="identitas.cakupan" placeholder="Contoh: Dasar prosedur penanganan dokumen (siklus hidup dokumen, jenis dan fungsi dokumen, proses penerimaan hingga pemusnahan dokumen)"></textarea></label>
+      <label>Sasaran pengguna <small>(otomatis dari fase/kelas, boleh diubah)</small><input data-bind="identitas.sasaran"></label>
+      <div class="sub">
+        <div class="sub-head"><b>Butir identitas tambahan</b> <small class="muted">(opsional, mis. Mata Pelajaran, Penyusun, Satuan Pendidikan)</small></div>
+        <div id="extraList"></div>
+        <button class="btn sm ghost" id="btnAddExtra">+ Tambah butir</button>
+      </div>
+      <label>Ide / konsep khusus untuk AI <small>(tidak dicetak)</small><textarea rows="2" data-bind="identitas.ide" placeholder="Contoh: siswa memilah 5 surat acak, ada stempel DITERIMA dan laci arsip A–Z, karakter pemandu bernama Arsi"></textarea></label>
+      <div class="quick">
+        <button class="btn tpl" data-tpl="all">⚡ Isi Semua dengan Templat</button>
+        <button class="btn ai" data-ai="all">✨ Isi Semua dengan AI <small class="ai-mode"></small></button>
+      </div>
+      <div class="pane-nav"><span></span><button class="btn primary" data-next="1">Lanjut: Deskripsi →</button></div>
+    </div>
+
+    <!-- B. DESKRIPSI -->
+    <div class="pane" data-pane="deskripsi">
+      <div class="pane-head"><h2>B. Deskripsi Umum Bahan Ajar</h2>
+        <div class="tools"><button class="btn sm tpl" data-tpl="deskripsi">⚡ Templat</button><button class="btn sm ai" data-ai="deskripsi">✨ AI</button></div></div>
+      <p class="hint">Jelaskan bentuk bahan ajar, tampilan antarmuka, fitur utama, pola interaksi siswa, serta indikator progres dan umpan balik. Pisahkan paragraf dengan baris kosong; awali baris dengan “- ” untuk butir; <code>**teks**</code> untuk tebal.</p>
+      <textarea class="big" rows="16" data-bind="deskripsi" placeholder="Bahan ajar &quot;...&quot; adalah ..."></textarea>
+      <div class="counter" id="wcDeskripsi">0 kata</div>
+      <div class="pane-nav"><button class="btn ghost" data-next="-1">← Kembali</button><button class="btn primary" data-next="1">Lanjut: Flowchart →</button></div>
+    </div>
+
+    <!-- C. ALUR -->
+    <div class="pane" data-pane="alur">
+      <div class="pane-head"><h2>C. Alur Interaksi (Flowchart)</h2>
+        <div class="tools"><button class="btn sm tpl" data-tpl="flow">⚡ Templat</button><button class="btn sm ai" data-ai="flow">✨ AI</button></div></div>
+      <details class="help" open><summary>Cara menulis bagan</summary>
+        <ul><li>Satu baris = satu kotak. Baris pertama menjadi <b>akar</b> (halaman awal).</li>
+        <li>Geser ke kanan 2 spasi (atau tekan <kbd>Tab</kbd>) untuk menjadikannya sub-menu; <kbd>Shift</kbd>+<kbd>Tab</kbd> untuk mengembalikan.</li>
+        <li>Pakai <code>-&gt;</code> untuk tautan/arah ke halaman lain, mis. <code>Tombol 2: Panduan -&gt; Navigasi &amp; Fitur</code>.</li></ul></details>
+      <div class="grid2 flow-grid">
+        <label>Bagan alur<textarea id="flowOutline" class="mono" rows="18" data-bind="flow.outline" spellcheck="false" placeholder="Halaman Beranda (Menu Utama)&#10;  Menu Beranda&#10;    Tombol 1: Studi Kasus -> Video Motivasi&#10;    Tombol 2: Panduan -> Navigasi &amp; Fitur&#10;  Halaman Ikhtisar Modul&#10;    Topik a: ...&#10;      a1: Infografis&#10;      a2: Kuis Singkat&#10;  Halaman Rangkuman &amp; Umpan Balik"></textarea></label>
+        <div><div class="lbl">Pratinjau bagan</div><div id="flowThumb" class="flow-thumb"></div>
+          <label class="mt">Tema gambar<select data-bind="flow.tema"><option value="terang">Terang berwarna (mudah dicetak)</option><option value="gelap">Gelap bergaris (seperti contoh)</option></select></label></div>
+      </div>
+      <div class="sub" id="flowNarasiWrap">
+        <div class="sub-head"><b>Narasi penjelasan bagan</b>
+          <label class="sw inline"><input type="checkbox" data-bind="flow.narasiAuto"><span>Buat otomatis dari bagan</span></label></div>
+        <div class="auto-view"><pre id="flowNarasiAutoView"></pre><button class="btn sm ghost" id="btnNarasiCopy">✏️ Salin ke editor untuk disunting</button></div>
+        <textarea id="flowNarasi" class="manual-view" rows="12" data-bind="flow.narasi" placeholder="1. Cabang Atas: ..."></textarea>
+      </div>
+      <div class="pane-nav"><button class="btn ghost" data-next="-1">← Kembali</button><button class="btn primary" data-next="1">Lanjut: Implementasi →</button></div>
+    </div>
+
+    <!-- D. IMPLEMENTASI -->
+    <div class="pane" data-pane="implementasi">
+      <div class="pane-head"><h2>D. Rencana Implementasi</h2>
+        <div class="tools"><button class="btn sm tpl" data-tpl="impl">⚡ Templat</button><button class="btn sm ai" data-ai="impl">✨ AI</button></div></div>
+      <div class="grid2">
+        <label>Model pembelajaran<select id="selModel" data-bind="impl.model"></select></label>
+        <label>Target capaian minimal (%)<input type="number" min="50" max="100" data-bind="impl.target"></label>
+      </div>
+      <p class="hint">Templat/AI memakai model dan target di atas. Pisahkan paragraf dengan baris kosong.</p>
+      <textarea class="big" rows="12" data-bind="impl.teks" placeholder="Bahan ajar ini dirancang untuk diintegrasikan menggunakan model pembelajaran ..."></textarea>
+      <div class="counter" id="wcImpl">0 kata</div>
+      <div class="sub">
+        <div class="sub-head"><b>Jadwal pengembangan</b><label class="inline">Jumlah minggu <input type="number" min="1" max="16" class="w60" data-bind="impl.minggu"></label></div>
+        <div id="jadwalEditor"></div>
+        <button class="btn sm ghost" id="btnAddJadwal">+ Tambah kegiatan</button>
+      </div>
+      <div class="pane-nav"><button class="btn ghost" data-next="-1">← Kembali</button><button class="btn primary" data-next="1">Lanjut: Storyboard →</button></div>
+    </div>
+
+    <!-- E. STORYBOARD -->
+    <div class="pane" data-pane="storyboard">
+      <div class="pane-head"><h2>E. Storyboard <small id="sceneCount" class="muted"></small></h2>
+        <div class="tools"><button class="btn sm tpl" data-tpl="scenes">⚡ Templat 4 Scene</button><button class="btn sm ai" data-ai="scenes">✨ AI</button></div></div>
+      <div class="grid2">
+        <label>Gaya gambar untuk prompt AI<select id="selGaya" data-bind="opsi.gaya"></select></label>
+        <div class="right-end"><button class="btn sm ghost" id="btnCollapse">Tutup semua kartu</button></div>
+      </div>
+      <div id="sceneList"></div>
+      <button class="btn add" id="btnAddScene">+ Tambah Scene</button>
+      <div class="pane-nav"><button class="btn ghost" data-next="-1">← Kembali</button><button class="btn primary" data-next="1">Lanjut: Unduh →</button></div>
+    </div>
+
+    <!-- EKSPOR -->
+    <div class="pane" data-pane="ekspor">
+      <div class="pane-head"><h2>Unduh Dokumen</h2></div>
+      <div class="grid2">
+        <label>Ukuran kertas<select data-bind="opsi.kertas"><option value="A4">A4</option><option value="Letter">Letter</option><option value="F4">F4 / Folio</option></select></label>
+        <label>Kode / awalan nama file <small>(opsional)</small><input data-bind="opsi.kode" placeholder="mis. BM_MPLB_4"></label>
+      </div>
+      <div class="export-cards">
+        <button class="xcard" id="btnDocx2"><span class="xi">📄</span><b>Unduh Word (.docx)</b><small>Dapat disunting di Word / Google Docs</small></button>
+        <button class="xcard" id="btnPdf"><span class="xi">🖨️</span><b>Cetak / Simpan PDF</b><small>Pilih “Simpan sebagai PDF” di jendela cetak</small></button>
+      </div>
+      <div class="sub">
+        <div class="sub-head"><b>Pemeriksaan kelengkapan</b></div>
+        <div id="checklist" class="checklist"></div>
+      </div>
+      <div class="sub">
+        <div class="sub-head"><b>Proyek</b> <small class="muted">(simpan agar bisa dilanjutkan di perangkat lain)</small></div>
+        <div class="btn-row"><button class="btn sm" id="btnJson">💾 Simpan Proyek (.json)</button><button class="btn sm ghost" id="btnOpen">📂 Buka Proyek</button><button class="btn sm danger-ghost" id="btnNew">🗑 Mulai Baru</button></div>
+      </div>
+      <div class="pane-nav"><button class="btn ghost" data-next="-1">← Kembali</button><span></span></div>
+    </div>
+  </section>
+
+  <section class="preview" id="previewPane">
+    <div class="pv-bar"><b>Pratinjau dokumen</b><span class="muted small">klik bagian dokumen untuk menyuntingnya</span>
+      <select id="zoomSel" aria-label="Perbesaran"><option value="fit">Pas lebar</option><option value="0.6">60%</option><option value="0.8">80%</option><option value="1">100%</option></select></div>
+    <div class="paper-wrap" id="paperWrap"><div class="paper" id="paper"></div></div>
+  </section>
+</main>
+
+<div class="mswitch"><button data-mv="form" class="active">✏️ Isi Form</button><button data-mv="preview">👁 Pratinjau</button></div>
+<footer class="credit">Dikembangkan oleh <b>Mohammad Yusron Kholish, S.Kom</b> · SMKS PGRI SINGOSARI</footer>
+<input type="file" id="fileImg" accept="image/*" hidden>
+<input type="file" id="fileJson" accept=".json,application/json" hidden>
+<div id="modal" class="modal hidden"></div>
+<div id="toast" class="toast" aria-live="polite"></div>
+
+<script>
+/* ============ DATA: daftar pilihan, templat, contoh ============ */
+const PROGRAM_KEAHLIAN = [
+  "Teknik Perawatan Gedung","Konstruksi dan Perawatan Bangunan Sipil","Teknik Konstruksi dan Perumahan",
+  "Desain Pemodelan dan Informasi Bangunan","Teknik Furnitur","Teknik Mesin","Teknik Otomotif",
+  "Teknik Pengelasan dan Fabrikasi Logam","Teknik Logistik","Teknik Elektronika","Teknik Pesawat Udara",
+  "Teknik Konstruksi Kapal","Kimia Analisis","Teknik Kimia Industri","Teknik Tekstil","Teknik Ketenagalistrikan",
+  "Teknik Energi Terbarukan","Teknik Geospasial","Teknik Geologi Pertambangan","Teknik Perminyakan",
+  "Pengembangan Perangkat Lunak dan Gim","Teknik Jaringan Komputer dan Telekomunikasi","Layanan Kesehatan",
+  "Teknik Laboratorium Medik","Teknologi Farmasi","Pekerjaan Sosial","Agribisnis Tanaman","Agribisnis Ternak",
+  "Agribisnis Perikanan","Usaha Pertanian Terpadu","Agriteknologi Pengolahan Hasil Pertanian","Kehutanan",
+  "Teknika Kapal Penangkap Ikan","Nautika Kapal Penangkap Ikan","Teknika Kapal Niaga","Nautika Kapal Niaga",
+  "Pemasaran","Manajemen Perkantoran dan Layanan Bisnis","Akuntansi dan Keuangan Lembaga",
+  "Usaha Layanan Pariwisata","Perhotelan","Kuliner","Kecantikan dan Spa","Seni Rupa","Desain Komunikasi Visual",
+  "Desain dan Produksi Kriya","Seni Pertunjukan","Broadcasting dan Perfilman","Animasi","Busana",
+  "Mata Pelajaran Umum (Muatan Nasional/Kewilayahan)"
+];
+
+const JENIS_BAHAN_AJAR = [
+  ["Lab Maya","lab"],["Simulasi Interaktif","lab"],["Game Edukasi","game"],
+  ["Video Pembelajaran Interaktif","video"],["Modul Digital Interaktif","modul"],["E-Book Interaktif","modul"],
+  ["Infografis Interaktif","modul"],["Augmented Reality (AR)","lab"],["Virtual Tour 360°","lab"]
+];
+const MODEL_PEMBELAJARAN = [
+  "Flipped Classroom atau Project-Based Learning","Project-Based Learning (PjBL)","Problem-Based Learning (PBL)",
+  "Discovery Learning","Flipped Classroom","Blended Learning","Teaching Factory (TEFA)","Pembelajaran Mendalam (Deep Learning)"
+];
+const KELAS_OPSI = [
+  {v:"E|X", fase:"E", label:"Fase E — Kelas X", sasaran:"Siswa SMK Kelas X (Sepuluh)"},
+  {v:"F|XI", fase:"F", label:"Fase F — Kelas XI", sasaran:"Siswa SMK Kelas XI (Sebelas)"},
+  {v:"F|XII", fase:"F", label:"Fase F — Kelas XII", sasaran:"Siswa SMK Kelas XII (Dua Belas)"},
+  {v:"F|XI-XII", fase:"F", label:"Fase F — Kelas XI dan XII", sasaran:"Siswa SMK Kelas XI dan XII"}
+];
+const GAYA_GAMBAR = {
+  "semi-realistis":"semi-realistis 3D bergaya antarmuka game edukasi, meja kerja/lingkungan kerja nyata dengan pencahayaan hangat, tombol besar berwarna cerah dengan bayangan lembut",
+  "flat":"ilustrasi vektor flat modern, warna cerah dan bersih, bentuk sederhana, ikon konsisten",
+  "isometrik":"ilustrasi isometrik 3D lembut (soft 3D), warna pastel cerah, sudut pandang isometrik",
+  "kartun":"kartun ceria ramah remaja dengan karakter pemandu, garis tegas, warna hidup",
+  "minimalis":"antarmuka aplikasi modern minimalis (UI dashboard), banyak ruang kosong, kartu bertepi membulat"
+};
+const INTERAKSI = [["normal","Normal"],["hover","Hover"],["hit","Hit"],["swipe","Swipe"],["show","Show"],["drag","Drag/drop"]];
+const NARASI_LABEL = ["Teks Instruksional pada Layar","Narasi suara (voice over)","Dialog karakter pemandu"];
+
+function defaultJadwal(){
+  return [
+    {kegiatan:"Penyusunan UI/UX dan aset visual grafis 2D", w:[1]},
+    {kegiatan:"Pengembangan script HTML5 dan logika interaksi", w:[2]},
+    {kegiatan:"Perekaman dan integrasi aset audio (SFX)", w:[3,4]},
+    {kegiatan:"Uji coba fungsionalitas dan navigasi internal", w:[5]},
+    {kegiatan:"Revisi dan optimasi rasio layar (16:9)", w:[6]},
+    {kegiatan:"Pengemasan ke format .zip (< 25MB) dan finalisasi", w:[7]},
+    {kegiatan:"Uji coba lapangan terbatas (Beta Testing) pada kelompok kecil siswa, pengumpulan umpan balik siswa, dan finalisasi produk.", w:[8]}
+  ];
+}
+
+function mkScene(o){
+  const s = {id:uid(), nama:"", treatment:"", visual:"", gambar:null, gw:0, gh:0, sumber:"ChatGPT",
+    narasiLabel:NARASI_LABEL[0], narasi:"", sfx:"", musik:"", latar:"", inter:{}, open:false};
+  INTERAKSI.forEach(([k])=>{ s.inter[k] = {on:false, t:""}; });
+  if(o){
+    for(const k of ["nama","treatment","visual","narasi","sfx","musik","latar","sumber","narasiLabel"]) if(o[k]!=null) s[k]=String(o[k]);
+    INTERAKSI.forEach(([k])=>{ if(o[k]!=null){ const t=String(o[k]).trim(); s.inter[k] = {on: !!t && !/^(-|–|disabled|tidak digunakan)/i.test(t), t: /^(-|–|disabled|tidak digunakan)/i.test(t)?"":t}; } });
+  }
+  return s;
+}
+
+/* ---------- konteks templat ---------- */
+function ctxOf(st){
+  const id = st.identitas;
+  const judul = id.judul.trim() || "[Judul Bahan Ajar]";
+  const topik = (id.judul.trim() ? id.judul.trim() : "materi ini")
+     .replace(/^(lab maya|simulasi|game( edukasi)?|modul( digital)?( interaktif)?|video( pembelajaran)?( interaktif)?|e-?book( interaktif)?)\s*[:\-–]?\s*/i,"");
+  const topikL = topik.charAt(0).toLowerCase()+topik.slice(1);
+  return {
+    judul, jenis:id.jenis||"Lab Maya", jenisL:(id.jenis||"Lab Maya"),
+    program:id.program||"[Program Keahlian]", topik, topikL,
+    cakupan:id.cakupan.trim(), sasaran:id.sasaran||"siswa SMK",
+    sasaranL:(id.sasaran||"siswa SMK").replace(/^Siswa/,"siswa"),
+    target:st.impl.target||80, model:st.impl.model||MODEL_PEMBELAJARAN[0]
+  };
+}
+function presetKey(jenis){ const f = JENIS_BAHAN_AJAR.find(j=>j[0]===jenis); return f?f[1]:"lab"; }
+
+/* ---------- templat deskripsi ---------- */
+function tplDeskripsi(st){
+  const c = ctxOf(st), p = presetKey(c.jenis);
+  const cak = c.cakupan ? ` Bahan ajar ini membantu ${c.sasaranL} menguasai ${c.cakupan.charAt(0).toLowerCase()+c.cakupan.slice(1).replace(/\.$/,"")} melalui pengalaman belajar yang aktif, aman, dan dapat diulang.` : "";
+  const T = {
+    lab:`Bahan ajar "${c.judul}" adalah ${c.jenis} berbentuk Single Page Application (SPA) interaktif berbasis HTML5 yang mensimulasikan praktik nyata pada kompetensi ${c.program}.${cak} Tampilan antarmuka berpusat pada lingkungan kerja virtual (visual 2D proporsional rasio 16:9) yang memuat alat, bahan, dan instruksi kerja yang relevan dengan dunia kerja. Fitur utama aplikasi ini menuntut interaksi dua arah: pengguna membaca informasi kerja dengan teliti, memilih alat atau tindakan yang tepat, lalu menyelesaikan tugas praktik menggunakan mekanika klik dan drag-and-drop. Setiap tindakan memperoleh umpan balik instan sehingga siswa langsung mengetahui ketepatan langkahnya. Bahan ajar ini juga dilengkapi dengan indikator progres simulasi (langkah ke-n dari total tugas) serta skor ketepatan di akhir sesi, dan dapat dijalankan tanpa koneksi internet.`,
+    game:`Bahan ajar "${c.judul}" adalah ${c.jenis} berbentuk Single Page Application (SPA) berbasis HTML5 yang mengemas materi ${c.topikL} pada program keahlian ${c.program} menjadi rangkaian misi bertingkat.${cak} Tampilan antarmuka dirancang proporsional dengan rasio 16:9, memuat peta misi, karakter pemandu, dan papan skor. Setiap level berisi tantangan yang menuntut pengguna menerapkan konsep secara langsung, misalnya memilih jawaban, mengurutkan langkah kerja, atau mencocokkan objek dengan mekanika drag-and-drop. Sistem poin, nyawa, dan lencana memberikan motivasi, sedangkan umpan balik instan menjelaskan alasan setiap jawaban benar atau keliru. Di akhir permainan, pengguna memperoleh rekap skor dan rekomendasi materi yang perlu diulang. Bahan ajar ini dapat dijalankan tanpa koneksi internet.`,
+    video:`Bahan ajar "${c.judul}" adalah ${c.jenis} berbentuk Single Page Application (SPA) berbasis HTML5 yang menyajikan materi ${c.topikL} pada program keahlian ${c.program} melalui rangkaian video pendek bersegmen.${cak} Tampilan antarmuka dirancang proporsional dengan rasio 16:9, memuat pemutar video, daftar segmen, dan panel catatan. Pada titik-titik penting, video berhenti otomatis dan menampilkan pertanyaan sisipan, hotspot penjelasan, atau aktivitas singkat yang harus diselesaikan sebelum video dilanjutkan. Umpan balik instan diberikan pada setiap jawaban, dan indikator progres menunjukkan segmen yang sudah dituntaskan. Di akhir sesi, pengguna memperoleh rangkuman materi beserta skor pemahaman. Bahan ajar ini dapat dijalankan tanpa koneksi internet.`,
+    modul:`Bahan ajar "${c.judul}" adalah ${c.jenis} berbentuk Single Page Application (SPA) berbasis HTML5 yang menyajikan materi ${c.topikL} pada program keahlian ${c.program} secara bertahap dan visual.${cak} Tampilan antarmuka dirancang proporsional dengan rasio 16:9 dan tersusun atas peta materi, halaman materi berisi infografis, animasi singkat, dan contoh kontekstual dari dunia kerja. Setiap subbab dilengkapi aktivitas interaktif seperti klik untuk menjelajah (hotspot), mencocokkan istilah dengan drag-and-drop, dan kuis singkat dengan umpan balik instan. Indikator progres menunjukkan materi yang telah dipelajari, dan di akhir modul pengguna mengerjakan evaluasi serta refleksi belajar. Bahan ajar ini dapat dijalankan tanpa koneksi internet.`
+  };
+  return T[p];
+}
+
+/* ---------- templat flowchart ---------- */
+function tplFlow(st){
+  const p = presetKey(st.identitas.jenis);
+  const F = {
+lab:`Halaman Beranda (Menu Utama)
+  Menu Beranda
+    Tombol 1: Studi Kasus -> Video Motivasi / Animasi
+    Tombol 2: Panduan -> Navigasi & Fitur
+    MULAI MODUL UTAMA
+  Halaman Ikhtisar Modul (Overview)
+    Topik a: Konsep Dasar
+      a1: Infografis
+      a2: Kuis Singkat
+    Topik b: Lab Simulasi Praktik
+      b1: Pengenalan Alat & Bahan
+      b2: Praktik Simulasi (Drag-and-Drop)
+    Topik c: Evaluasi
+      c1: Soal Evaluasi
+      c2: Skor & Umpan Balik
+  Halaman Rangkuman & Umpan Balik
+    Rangkuman Materi
+    Profesi & Peluang -> Peta Karier Interaktif
+    Ulangi Simulasi / Selesai`,
+game:`Halaman Beranda (Menu Utama)
+  Menu Beranda
+    Tombol 1: Cerita Misi -> Animasi Pembuka
+    Tombol 2: Cara Bermain -> Kontrol & Aturan Poin
+    MULAI PERMAINAN
+  Peta Misi (Pilih Level)
+    Level 1: Pengenalan
+      1a: Tantangan Pilih Jawaban
+      1b: Kuis Singkat
+    Level 2: Penerapan
+      2a: Tantangan Drag-and-Drop
+      2b: Kuis Singkat
+    Level 3: Bos Akhir
+      3a: Studi Kasus Dunia Kerja
+      3b: Uji Kecepatan
+  Hasil Permainan
+    Rekap Skor & Lencana
+    Materi yang Perlu Diulang -> Ringkasan Materi
+    Main Lagi / Selesai`,
+video:`Halaman Beranda (Menu Utama)
+  Menu Beranda
+    Tombol 1: Tujuan Pembelajaran
+    Tombol 2: Panduan -> Navigasi & Fitur
+    MULAI BELAJAR
+  Daftar Segmen Video
+    Segmen 1: Pengantar
+      1a: Video Interaktif
+      1b: Pertanyaan Sisipan
+    Segmen 2: Konsep Inti
+      2a: Video Interaktif + Hotspot
+      2b: Aktivitas Singkat
+    Segmen 3: Penerapan di Dunia Kerja
+      3a: Video Studi Kasus
+      3b: Kuis Segmen
+  Halaman Rangkuman & Umpan Balik
+    Rangkuman Materi
+    Skor Pemahaman
+    Ulangi Segmen / Selesai`,
+modul:`Halaman Beranda (Menu Utama)
+  Menu Beranda
+    Tombol 1: Tujuan Pembelajaran
+    Tombol 2: Panduan -> Navigasi & Fitur
+    MULAI MODUL
+  Peta Materi
+    Bab 1: Konsep Dasar
+      1a: Infografis Interaktif
+      1b: Kuis Singkat
+    Bab 2: Prosedur Kerja
+      2a: Animasi Langkah Kerja
+      2b: Aktivitas Drag-and-Drop
+    Bab 3: Penerapan
+      3a: Studi Kasus Dunia Kerja
+      3b: Latihan Soal
+  Evaluasi & Refleksi
+    Evaluasi Akhir
+    Refleksi Belajar
+    Profesi & Peluang -> Peta Karier Interaktif`
+  };
+  return F[p];
+}
+
+/* ---------- templat implementasi ---------- */
+function tplImpl(st){
+  const c = ctxOf(st), p = presetKey(c.jenis);
+  const akt = {lab:"eksperimen maya", game:"permainan", video:"rangkaian video", modul:"modul"}[p];
+  const capai = {lab:"akurasi praktik", game:"skor permainan", video:"skor pemahaman", modul:"nilai evaluasi"}[p];
+  return `Bahan ajar ${c.jenis} ini dirancang untuk diintegrasikan menggunakan model pembelajaran ${c.model} pada program keahlian ${c.program}. Guru terlebih dahulu menjelaskan konsep teoretis${c.cakupan?` mengenai ${c.cakupan.charAt(0).toLowerCase()+c.cakupan.slice(1).replace(/\.$/,"")}`:""} di kelas atau melalui modul bacaan, kemudian mengaitkannya dengan contoh nyata di dunia kerja.
+
+Selanjutnya, siswa diminta untuk mengakses file index.html bahan ajar ini secara mandiri di perangkat komputer sekolah atau laptop masing-masing tanpa memerlukan koneksi internet. Guru bertindak sebagai fasilitator yang menginstruksikan siswa untuk mencapai ${capai} minimal ${c.target}%. Karena aplikasi menyediakan umpan balik langsung (immediate feedback) atas setiap kesalahan, siswa dapat merefleksikan kesalahannya dan mengulang ${akt} tersebut hingga mencapai tingkat kompetensi yang dikuasai secara utuh sebelum masuk ke praktik nyata di laboratorium atau tempat kerja.`;
+}
+
+/* ---------- templat storyboard ---------- */
+function tplScenes(st){
+  const c = ctxOf(st), p = presetKey(c.jenis);
+  const off = "";
+  const home = {
+    nama:"Scene 1: Laman Muka (Home)",
+    treatment:"Pengguna disambut dengan judul materi. Layar dirancang sederhana dan estetis, terfokus pada tombol aksi utama.",
+    visual:`Latar belakang suasana kerja ${c.program} yang abstrak dan lembut. Di tengah, teks tebal "${c.jenis}: ${c.judul}". Di bawahnya terdapat tombol besar bertuliskan "MULAI" dan tiga ikon ringkas tahapan belajar.`,
+    narasi:`"Belajar sambil praktik, kuasai ${c.topikL}!"`,
+    sfx:"Bunyi ketukan/klik singkat saat tombol diklik", musik:"Instrumental lo-fi ceria (volume rendah)", latar:"",
+    normal:'Tombol "MULAI" berdenyut lambat', hover:'Tombol "MULAI" berubah warna/menyala', hit:"Pindah ke Scene 2", swipe:off, show:off, drag:off
+  };
+  const panduan = {
+    nama:"Scene 2: Panduan",
+    treatment:'Layar memberikan instruksi spesifik agar pengguna tidak kebingungan saat memasuki aktivitas utama. Terdapat indikator langkah ("Langkah 1 dari 4").',
+    visual:'Papan clipboard melayang di tengah layar berisi tiga langkah instruksi bergambar ikon. Terdapat tombol "MENGERTI" di bagian bawah serta tombol Home dan Musik di pojok atas.',
+    narasi:'"Ikuti langkah-langkah di atas untuk menyelesaikan aktivitas dengan benar."',
+    sfx:"Suara kertas dibalik", musik:"Masih berlanjut dari Scene 1", latar:"",
+    normal:"Teks instruksi tampil statis", hover:'Tombol "MENGERTI" membesar skala 1.1x', hit:"Pindah ke Scene 3", swipe:off, show:off, drag:off
+  };
+  const evaluasi = (namaAkt, satuan)=>({
+    nama:"Scene 4: Evaluasi dan Umpan Balik",
+    treatment:`Menampilkan konsekuensi dari hasil ${namaAkt} pengguna di Scene 3, memastikan fungsi penilaian kompetensi tercapai.`,
+    visual:`Papan laporan grafik (nilai rapor). Menampilkan detail: "Total ${satuan}: 5. Tepat: 4. Keliru: 1", persentase akurasi, dan grafik performa. Tombol "COBA LAGI" dan "SELESAI".`,
+    narasi:'"Teruslah berlatih untuk mencapai akurasi 100%."',
+    sfx:`Jika skor 100% (nada sukses meriah). Jika < ${c.target}% (nada peringatan halus)`, musik:"", latar:"",
+    normal:off, hover:"Efek timbul pada tombol opsi",
+    hit:'Jika klik "COBA LAGI", sistem mereset variabel nilai dan kembali ke Scene 3\nJika klik "SELESAI", animasi layar meredup ke hitam (Selesai)',
+    swipe:off, show:off, drag:off
+  });
+  const S = {
+    lab:[home, panduan, {
+      nama:"Scene 3: Lab Simulasi (Aktivitas Utama)",
+      treatment:`Aktivitas interaktif dinamis yang merupakan inti dari ${c.jenis}. Pengguna memegang kontrol penuh dalam menyelesaikan tugas praktik ${c.topikL}.`,
+      visual:"Sudut pandang orang pertama (first-person) menghadap area kerja. Di kiri terdapat panel alat dan bahan, di tengah area kerja utama, dan di kanan panel instruksi beserta karakter pemandu. Bagian atas menampilkan judul tugas dan indikator progres langkah.",
+      narasi:'"Selesaikan setiap langkah praktik dengan urutan yang benar!"',
+      sfx:'Bunyi klik saat memilih alat, nada "ting" saat langkah benar, nada "buzz" halus saat keliru',
+      musik:"Musik instrumental lo-fi bertempo lambat untuk membantu konsentrasi (volume 10%, looping)",
+      latar:"Suara sayup-sayup suasana tempat kerja",
+      normal:off, hover:off, hit:"Klik objek untuk fungsi zoom in (memperbesar detail agar terbaca)", swipe:off,
+      show:"Saat scene pertama kali dimuat, header muncul seketika, disusul ikon alat yang bermunculan bergantian dari kiri ke kanan (bouncing pop-up), kemudian panel kanan beserta karakter pemandu meluncur masuk dari sisi kanan layar (slide-in right).",
+      drag:"Menyeret alat/bahan ke area kerja yang tepat\nMenyeret hasil kerja ke kotak tujuan yang sesuai"
+    }, evaluasi("drag-and-drop","Tugas")],
+    game:[{...home, nama:"Scene 1: Laman Muka (Home)", visual:`Latar ilustrasi dunia game bertema ${c.program}. Di tengah, logo judul "${c.judul}" dengan karakter maskot. Di bawahnya tombol besar "MAIN" serta tombol kecil "Cara Bermain".`, narasi:`"Selesaikan misinya, jadilah ahli ${c.topikL}!"`, normal:'Tombol "MAIN" berdenyut lambat', hover:'Tombol "MAIN" menyala dan bergetar ringan'},
+      {nama:"Scene 2: Peta Misi (Pilih Level)", treatment:"Pengguna memilih level yang tersedia. Level berikutnya terbuka setelah level sebelumnya diselesaikan.",
+       visual:"Peta petualangan dengan jalur berliku dan tiga titik level bergembok. Level yang terbuka bercahaya, menampilkan bintang yang diperoleh. Di pojok atas terdapat total poin dan tombol Home.",
+       narasi:'"Pilih level dan kumpulkan bintang sebanyak-banyaknya!"', sfx:"Bunyi gembok terbuka saat level baru tersedia", musik:"Musik petualangan ceria (looping)", latar:"",
+       normal:"Level terkunci tampil redup", hover:"Titik level membesar dan menampilkan judul level", hit:"Masuk ke Scene 3 sesuai level yang dipilih", swipe:"Geser peta ke kiri/kanan pada layar sentuh", show:"Titik level muncul berurutan dengan efek pop-up", drag:off},
+      {nama:"Scene 3: Arena Misi (Gameplay)", treatment:`Inti permainan. Pengguna menyelesaikan tantangan ${c.topikL} dalam batas waktu dengan sistem poin dan nyawa.`,
+       visual:"Arena permainan dengan soal/tantangan di tengah, pilihan jawaban atau objek yang dapat diseret di bawah, bilah waktu dan nyawa di atas, serta karakter pemandu di sisi kanan.",
+       narasi:'"Cepat dan tepat! Setiap jawaban benar menambah poinmu."', sfx:'Nada "ting" saat benar, "buzz" saat keliru, bunyi koin saat poin bertambah', musik:"Musik bertempo sedang yang semakin cepat saat waktu hampir habis", latar:"",
+       normal:off, hover:"Pilihan jawaban menyala saat disorot", hit:"Klik pilihan jawaban untuk mengunci jawaban", swipe:off, show:"Soal muncul dengan efek zoom-in, pilihan jawaban menyusul dari bawah", drag:"Menyeret objek ke kotak kategori yang sesuai"},
+      {...evaluasi("permainan","Soal"), nama:"Scene 4: Hasil Permainan dan Lencana", visual:'Papan hasil dengan bintang 1–3, total poin, lencana yang diperoleh, dan daftar materi yang perlu diulang. Tombol "MAIN LAGI" dan "SELESAI".',
+       hit:'Jika klik "MAIN LAGI", permainan diulang dari Peta Misi\nJika klik "SELESAI", kembali ke Laman Muka'}],
+    video:[home, {
+      nama:"Scene 2: Pemutar Video Interaktif", treatment:"Video segmen diputar. Pada titik tertentu video berhenti otomatis dan menampilkan hotspot penjelasan yang harus dibuka pengguna.",
+      visual:"Pemutar video besar di tengah layar dengan bilah progres bertanda titik interaksi. Di kanan terdapat daftar segmen dan panel catatan. Hotspot berbentuk lingkaran berdenyut muncul di atas video.",
+      narasi:'Narasi video menjelaskan konsep inti, diikuti teks: "Klik titik yang berkedip untuk melihat penjelasan."', sfx:"Bunyi notifikasi lembut saat video berhenti", musik:"Musik latar video (volume rendah)", latar:"",
+      normal:"Video berputar otomatis", hover:"Hotspot membesar dan menampilkan label", hit:"Klik hotspot untuk membuka penjelasan; klik Lanjut untuk meneruskan video", swipe:off, show:"Panel penjelasan meluncur dari kanan (slide-in right)", drag:off},
+      {nama:"Scene 3: Kuis Sisipan", treatment:"Setelah setiap segmen, pengguna menjawab pertanyaan singkat untuk memastikan pemahaman sebelum lanjut ke segmen berikutnya.",
+       visual:"Kartu pertanyaan di atas video yang diburamkan, dengan 4 pilihan jawaban berbentuk tombol dan indikator nomor soal.",
+       narasi:'"Jawab pertanyaan berikut untuk membuka segmen selanjutnya."', sfx:'Nada "ting" saat benar, "buzz" halus saat keliru', musik:"Berhenti sementara", latar:"",
+       normal:off, hover:"Tombol jawaban berubah warna", hit:"Klik jawaban untuk melihat umpan balik dan pembahasan", swipe:off, show:"Kartu soal muncul dengan efek pop-up", drag:"Menyeret istilah ke definisi yang sesuai (untuk soal mencocokkan)"},
+      {...evaluasi("kuis","Soal"), nama:"Scene 4: Rangkuman dan Umpan Balik"}],
+    modul:[home, {
+      nama:"Scene 2: Peta Materi", treatment:"Pengguna melihat seluruh bab dan memilih materi yang akan dipelajari. Bab yang selesai ditandai centang.",
+      visual:"Kartu-kartu bab tersusun seperti peta perjalanan, masing-masing dengan ikon, judul bab, dan status progres. Di atas terdapat bilah progres total modul.",
+      narasi:'"Pilih bab untuk mulai belajar. Selesaikan semuanya untuk membuka evaluasi akhir."', sfx:"Bunyi klik halus", musik:"Instrumental lembut (volume rendah)", latar:"",
+      normal:"Kartu bab tampil statis", hover:"Kartu bab terangkat dengan bayangan", hit:"Masuk ke Scene 3 sesuai bab yang dipilih", swipe:off, show:"Kartu bab muncul bergantian dari kiri ke kanan", drag:off},
+      {nama:"Scene 3: Halaman Materi dan Aktivitas", treatment:"Materi disajikan dengan infografis dan animasi singkat, diselingi aktivitas interaktif agar pengguna aktif membangun pemahaman.",
+       visual:"Tata letak dua kolom: kiri infografis/animasi dengan hotspot, kanan penjelasan singkat dan kotak aktivitas. Di bawah terdapat tombol Sebelumnya/Berikutnya dan indikator halaman.",
+       narasi:'"Klik setiap bagian gambar untuk melihat penjelasannya."', sfx:"Bunyi halaman dibalik", musik:"Masih berlanjut", latar:"",
+       normal:off, hover:"Hotspot menyala saat disorot", hit:"Klik hotspot untuk membuka penjelasan", swipe:"Geser untuk berpindah halaman pada layar sentuh", show:"Elemen infografis muncul bertahap (fade-in)", drag:"Menyeret istilah ke bagian gambar yang sesuai"},
+      {...evaluasi("aktivitas dan kuis","Soal"), nama:"Scene 4: Evaluasi dan Refleksi"}]
+  };
+  return S[p].map(o=>mkScene(o));
+}
+
+/* ---------- contoh proyek lengkap (TJKT) ---------- */
+function sampleState(){
+  const st = newState();
+  Object.assign(st.identitas, {
+    judul:"Simulasi Crimping Kabel UTP Standar T568B", jenis:"Lab Maya",
+    program:"Teknik Jaringan Komputer dan Telekomunikasi",
+    cakupan:"Media transmisi jaringan kabel (jenis kabel UTP, standar pengkabelan T568A dan T568B, prosedur crimping, dan pengujian kabel dengan LAN tester)",
+    kelas:"E|X", sasaran:"Siswa SMK Kelas X (Sepuluh)",
+    ide:"Siswa merakit kabel straight dan cross, urutan warna diacak, ada LAN tester dengan lampu indikator."
+  });
+  st.deskripsi = `Bahan ajar "Simulasi Crimping Kabel UTP Standar T568B" adalah Lab Maya Single Page Application (SPA) interaktif berbasis HTML5 yang mensimulasikan praktik nyata seorang teknisi jaringan dalam membuat kabel jaringan. Tampilan antarmuka berpusat pada sebuah meja kerja teknisi virtual (visual 2D proporsional rasio 16:9) yang memuat gulungan kabel UTP, konektor RJ45, tang crimping, dan LAN tester. Fitur utama aplikasi ini menuntut interaksi dua arah. Pengguna akan mengupas kabel, menyusun delapan urutan warna sesuai standar T568B dengan mekanika drag-and-drop, memasukkan kabel ke konektor, lalu menekan tang crimping. Hasil kerja diuji menggunakan LAN tester yang menyalakan lampu 1–8 secara berurutan sehingga siswa dapat langsung melihat ketepatan susunan kabelnya. Bahan ajar ini juga dilengkapi dengan indikator progres simulasi (langkah ke-n dari total langkah) serta umpan balik instan berupa skor ketepatan di akhir sesi.`;
+  st.flow.outline = `Halaman Beranda (Menu Utama)
+  Menu Beranda
+    Tombol 1: Studi Kasus -> Animasi Jaringan Kantor Putus
+    Tombol 2: Panduan -> Navigasi & Fitur
+    MULAI MODUL UTAMA
+  Halaman Ikhtisar Modul (Overview)
+    Topik a: Mengenal Media Transmisi
+      a1: Infografis Jenis Kabel
+      a2: Kuis Singkat
+    Topik b: Standar Pengkabelan
+      b1: Animasi T568A vs T568B
+      b2: Susun Warna (Drag-and-Drop)
+    Topik c: Lab Crimping
+      c1: Simulasi Crimping Straight
+      c2: Uji dengan LAN Tester
+  Halaman Rangkuman & Umpan Balik
+    Rangkuman Materi
+    Profesi & Peluang -> Peta Karier Teknisi Jaringan
+    Ulangi Simulasi / Selesai`;
+  st.impl.model = "Flipped Classroom atau Project-Based Learning";
+  st.impl.target = 80;
+  st.impl.teks = `Bahan ajar Lab Maya ini dirancang untuk diintegrasikan menggunakan model pembelajaran Flipped Classroom atau Project-Based Learning pada mata pelajaran Dasar-dasar Teknik Jaringan Komputer dan Telekomunikasi. Guru pertama-tama menjelaskan konsep teoretis mengenai jenis media transmisi, standar pengkabelan T568A dan T568B, serta keselamatan kerja saat menggunakan tang crimping di kelas atau melalui modul bacaan.
+
+Selanjutnya, siswa diminta untuk mengakses file index.html bahan ajar ini secara mandiri di perangkat komputer sekolah atau laptop masing-masing tanpa memerlukan koneksi internet. Guru bertindak sebagai fasilitator yang menginstruksikan siswa untuk mencapai akurasi susunan kabel minimal 80%. Karena aplikasi menyediakan umpan balik langsung (immediate feedback) atas setiap kesalahan urutan warna, siswa dapat merefleksikan kesalahannya dan mengulang eksperimen maya tersebut hingga mencapai tingkat kompetensi psikomotorik (simulasi) yang dikuasai secara utuh sebelum masuk ke praktik crimping nyata di laboratorium jaringan.`;
+  st.impl.minggu = 8; st.impl.jadwal = defaultJadwal();
+  st.scenes = [
+    mkScene({nama:"Scene 1: Laman Muka (Home)", treatment:"Pengguna disambut dengan judul materi. Layar dirancang sederhana dan estetis, terfokus pada tombol aksi utama.",
+      visual:'Latar belakang meja kerja teknisi jaringan yang abstrak dengan gulungan kabel biru dan rak switch di kejauhan. Di tengah, teks tebal "Lab Maya: Simulasi Crimping Kabel UTP". Di bawahnya terdapat tombol besar bertuliskan "MULAI SIMULASI" dan tiga ikon tahapan: Kupas Kabel, Susun Warna, Uji Kabel.',
+      narasi:'"Belajar sambil praktik, jadilah teknisi jaringan andal!"', sfx:"Bunyi klik mouse singkat saat tombol diklik", musik:"Instrumental lo-fi ceria (vol. rendah)",
+      normal:'Tombol "MULAI" berdenyut lambat', hover:'Tombol "MULAI" berubah warna/menyala', hit:"Pindah ke Scene 2", swipe:"", show:"", drag:""}),
+    mkScene({nama:"Scene 2: Panduan", treatment:'Layar memberikan instruksi spesifik agar pengguna tidak kebingungan saat memasuki laboratorium. Terdapat indikator langkah ("Langkah 1 dari 4").',
+      visual:'Papan clipboard melayang di tengah layar berisi instruksi: "1. Kupas jaket kabel ±2 cm. 2. Susun 8 kabel sesuai urutan T568B. 3. Masukkan ke RJ45 lalu crimping. 4. Uji dengan LAN tester". Terdapat tombol "MENGERTI".',
+      narasi:'"Ikuti langkah-langkah di atas untuk menyelesaikan simulasi dengan benar."', sfx:"Suara kertas dibalik", musik:"Masih berlanjut dari Scene 1",
+      normal:"Teks instruksi tampil statis", hover:'Tombol "MENGERTI" membesar skala 1.1x', hit:"Pindah ke Scene 3", swipe:"", show:"", drag:""}),
+    mkScene({nama:"Scene 3: Lab Simulasi (Aktivitas Utama)", treatment:"Aktivitas interaktif dinamis yang merupakan inti dari Lab Maya. Pengguna memegang kontrol penuh dalam menyusun dan menguji kabel.",
+      visual:"Sudut pandang first-person menghadap meja kerja. Di kiri terdapat delapan kabel berwarna yang sudah dikupas dalam posisi acak. Di tengah slot susunan 1–8 dan konektor RJ45 transparan. Di kanan tang crimping dan LAN tester. Bagian atas menampilkan bilah progres langkah.",
+      narasi:'"Pastikan urutan warna sesuai standar T568B: putih-oranye, oranye, putih-hijau, biru, putih-biru, hijau, putih-cokelat, cokelat."',
+      sfx:"Bunyi kabel dikupas, bunyi klik tang crimping (Krek!), bunyi bip LAN tester", musik:"Musik instrumental lo-fi bertempo lambat untuk konsentrasi (volume 10%, looping)", latar:"Suara sayup-sayup kipas server di ruang jaringan",
+      normal:"", hover:"Kabel yang disorot terangkat sedikit dan menampilkan nama warnanya", hit:"Klik konektor RJ45 untuk zoom in memeriksa susunan kabel", swipe:"",
+      show:"Saat scene dimuat, header muncul seketika, disusul delapan kabel yang bermunculan bergantian dari kiri ke kanan (bouncing pop-up), kemudian panel alat meluncur masuk dari sisi kanan layar (slide-in right).",
+      drag:"Menyeret kabel berwarna ke slot urutan 1–8\nMenyeret tang crimping ke konektor (animasi pin tertekan)\nMenyeret kabel jadi ke port LAN tester"}),
+    mkScene({nama:"Scene 4: Evaluasi dan Umpan Balik", treatment:"Menampilkan konsekuensi dari hasil drag-and-drop pengguna di Scene 3, memastikan fungsi penilaian kompetensi tercapai.",
+      visual:'Papan laporan grafik (nilai rapor). Menampilkan detail: "Total Kabel: 5. Susunan Tepat: 4. Susunan Keliru: 1", lampu LAN tester per kabel, dan persentase akurasi. Tombol "COBA LAGI" dan "SELESAI".',
+      narasi:'"Teruslah berlatih untuk mencapai akurasi 100%."', sfx:"Jika skor 100% (nada sukses meriah). Jika < 80% (nada peringatan halus)",
+      normal:"", hover:"Efek timbul pada tombol opsi", hit:'Jika klik "COBA LAGI", sistem mereset variabel nilai dan kembali ke Scene 3\nJika klik "SELESAI", animasi layar meredup ke hitam (Selesai)', swipe:"", show:"", drag:""})
+  ];
+  st.opsi.kode = "BM_TJKT_1";
+  return st;
+}
+
+/* ============ ZIP (metode store) + penulis DOCX mandiri ============ */
+const CRC_TABLE = (()=>{ const t = new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
+function crc32(u8){ let c = 0xFFFFFFFF; for(let i=0;i<u8.length;i++) c = CRC_TABLE[(c^u8[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function makeZip(files){ // files: [{name, data:Uint8Array|string}]
+  const enc = new TextEncoder(); const parts=[]; const central=[]; let offset=0;
+  const d = new Date(); const dt = ((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate(); const tm = (d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1);
+  for(const f of files){
+    const name = enc.encode(f.name); const data = typeof f.data==="string" ? enc.encode(f.data) : f.data; const crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,0,true);
+    lh.setUint16(10,tm,true); lh.setUint16(12,dt,true); lh.setUint32(14,crc,true); lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true);
+    lh.setUint16(26,name.length,true); lh.setUint16(28,0,true);
+    parts.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true);
+    ch.setUint16(12,tm,true); ch.setUint16(14,dt,true); ch.setUint32(16,crc,true); ch.setUint32(20,data.length,true); ch.setUint32(24,data.length,true);
+    ch.setUint16(28,name.length,true); ch.setUint16(30,0,true); ch.setUint16(32,0,true); ch.setUint16(34,0,true); ch.setUint16(36,0,true);
+    ch.setUint32(38,0,true); ch.setUint32(42,offset,true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + data.length;
+  }
+  const cdSize = central.reduce((a,b)=>a+b.length,0);
+  const eo = new DataView(new ArrayBuffer(22));
+  eo.setUint32(0,0x06054b50,true); eo.setUint16(8,files.length,true); eo.setUint16(10,files.length,true);
+  eo.setUint32(12,cdSize,true); eo.setUint32(16,offset,true);
+  return new Blob([...parts, ...central, new Uint8Array(eo.buffer)], {type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+}
+function dataURLtoBytes(url){ const b64 = url.split(",")[1]; const bin = atob(b64); const u = new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u; }
+
+/* ---------- pembangun XML WordprocessingML ---------- */
+const PAPER = { A4:{w:11906,h:16838,label:"A4"}, Letter:{w:12240,h:15840,label:"Letter"}, F4:{w:12240,h:18720,label:"F4 / Folio"} };
+const MARGIN = 1440;
+const COL = { sec:"C6D9F1", sbHead:"FFFF00", scene:"DCE6F2", treat:"FBE4D5", visual:"EDEDED", narasi:"FFF2CC", suara:"DEEAF6", inter:"E2EFD9" };
+
+function xesc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,""); }
+function wRun(text, o={}){
+  let rp = "";
+  if(o.b) rp += "<w:b/><w:bCs/>";
+  if(o.i) rp += "<w:i/><w:iCs/>";
+  if(o.color) rp += `<w:color w:val="${o.color}"/>`;
+  if(o.sz) rp += `<w:sz w:val="${o.sz}"/><w:szCs w:val="${o.sz}"/>`;
+  return `<w:r>${rp?`<w:rPr>${rp}</w:rPr>`:""}<w:t xml:space="preserve">${xesc(text)}</w:t></w:r>`;
+}
+function wRunsInline(text, o={}){ return inlineRuns(text).map(p=>wRun(p.t, {...o, b:o.b||p.b, i:o.i||p.i})).join(""); }
+function wPara(inner, o={}){
+  let pp = "";
+  if(o.keepNext) pp += "<w:keepNext/>";
+  if(o.num) pp += `<w:numPr><w:ilvl w:val="${o.lvl||0}"/><w:numId w:val="${o.num}"/></w:numPr>`;
+  pp += `<w:spacing w:before="${o.before||0}" w:after="${o.after||0}" w:line="${o.line||276}" w:lineRule="auto"/>`;
+  if(o.ind) pp += `<w:ind${o.ind.left!=null?` w:left="${o.ind.left}"`:""}${o.ind.hanging!=null?` w:hanging="${o.ind.hanging}"`:""}${o.ind.firstLine!=null?` w:firstLine="${o.ind.firstLine}"`:""}/>`;
+  if(o.jc) pp += `<w:jc w:val="${o.jc}"/>`;
+  return `<w:p><w:pPr>${pp}</w:pPr>${inner||""}</w:p>`;
+}
+function wCell(inner, o={}){
+  let tp = `<w:tcW w:w="${Math.round(o.w)}" w:type="dxa"/>`;
+  if(o.span>1) tp += `<w:gridSpan w:val="${o.span}"/>`;
+  if(o.vMerge) tp += o.vMerge==="restart" ? `<w:vMerge w:val="restart"/>` : `<w:vMerge/>`;
+  if(o.fill) tp += `<w:shd w:val="clear" w:color="auto" w:fill="${o.fill}"/>`;
+  if(o.mar) tp += `<w:tcMar><w:top w:w="${o.mar}" w:type="dxa"/><w:bottom w:w="${o.mar}" w:type="dxa"/></w:tcMar>`;
+  if(o.vAlign) tp += `<w:vAlign w:val="${o.vAlign}"/>`;
+  let body = inner || wPara("");
+  if(/<\/w:tbl>\s*$/.test(body)) body += wPara("");
+  return `<w:tc><w:tcPr>${tp}</w:tcPr>${body}</w:tc>`;
+}
+function wTable(rows, widths, o={}){
+  const total = widths.reduce((a,b)=>a+b,0);
+  const bd = (t)=>`<w:${t} w:val="single" w:sz="${o.bsz||6}" w:space="0" w:color="000000"/>`;
+  const tblPr = `<w:tblPr><w:tblW w:w="${Math.round(total)}" w:type="dxa"/>${o.ind?`<w:tblInd w:w="${o.ind}" w:type="dxa"/>`:""}<w:tblBorders>${["top","left","bottom","right","insideH","insideV"].map(bd).join("")}</w:tblBorders><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar><w:tblLook w:val="04A0" w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="1"/></w:tblPr>`;
+  const grid = `<w:tblGrid>${widths.map(w=>`<w:gridCol w:w="${Math.round(w)}"/>`).join("")}</w:tblGrid>`;
+  const trs = rows.map(r=>{
+    const trPr = (r.cantSplit||r.header) ? `<w:trPr>${r.cantSplit?"<w:cantSplit/>":""}${r.header?"<w:tblHeader/>":""}</w:trPr>` : "";
+    return `<w:tr>${trPr}${r.cells.join("")}</w:tr>`;
+  }).join("");
+  return `<w:tbl>${tblPr}${grid}${trs}</w:tbl>`;
+}
+
+/* blok teks (paragraf + butir) */
+function wBlocks(txt, o={}){
+  const blocks = parseBlocks(txt);
+  if(!blocks.length) return wPara("", o.p||{});
+  return blocks.map(b=>{
+    if(b.t==="gap") return wPara("", {after:0});
+    if(b.t==="li") return wPara(wRunsInline(b.text, o.r), {num:o.num||1, lvl:b.lvl, jc:o.jcLi||o.jc, after:o.liAfter||0});
+    return wPara(wRunsInline(b.text, o.r), {jc:o.jc, after:o.pAfter||0, ind:o.ind});
+  }).join("");
+}
+
+function buildDocx(st, imgs){
+  const paper = PAPER[st.opsi.kertas] || PAPER.A4;
+  const W = paper.w - MARGIN*2;            // lebar tabel luar
+  const innerW = W - 216;                   // lebar isi sel tabel luar
+  const rels = []; const media = []; let imgN = 0;
+  function addImage(dataURL, wTw, hTw){
+    imgN++;
+    const isPng = dataURL.startsWith("data:image/png");
+    const ext = isPng ? "png" : "jpeg";
+    const fname = `image${imgN}.${ext}`;
+    media.push({name:`word/media/${fname}`, data:dataURLtoBytes(dataURL)});
+    const rid = `rIdImg${imgN}`;
+    rels.push(`<Relationship Id="${rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${fname}"/>`);
+    const cx = Math.round(wTw*635), cy = Math.round(hTw*635);
+    return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:docPr id="${imgN}" name="Gambar ${imgN}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${imgN}" name="${fname}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`;
+  }
+  function fitImg(w, h, maxW, maxH){ let ww = maxW, hh = maxW*h/w; if(hh>maxH){ hh = maxH; ww = maxH*w/h; } return [ww, hh]; }
+  const maxImgH = paper.h - MARGIN*2 - 1400;
+
+  const id = st.identitas;
+  const secHead = (t)=>({cantSplit:true, cells:[wCell(wPara(wRun(t,{b:true}),{ind:{left:360}, before:20, after:20, keepNext:true}), {w:W, fill:COL.sec})]});
+  const secBody = (xml)=>({cells:[wCell(xml, {w:W})]});
+  const rows = [];
+
+  /* A. Identitas */
+  const kelasOpt = KELAS_OPSI.find(k=>k.v===id.kelas) || KELAS_OPSI[0];
+  const idItems = [["Judul", id.judul],["Jenis bahan ajar", id.jenis],["Program keahlian", id.program],["Cakupan Materi", id.cakupan],[`Sasaran pengguna (Fase ${kelasOpt.fase})`, id.sasaran]]
+    .concat((id.extra||[]).filter(e=>e.label.trim()).map(e=>[e.label, e.value]));
+  let A = wPara("",{after:60});
+  idItems.forEach(([l,v])=>{ A += wPara(wRun(l), {num:1, after:0}) + wPara(wRun(v||""), {ind:{left:720}, after:220}); });
+  rows.push(secHead("A.  IDENTITAS BAHAN AJAR:"), secBody(A));
+
+  /* B. Deskripsi */
+  rows.push(secHead("B.  DESKRIPSI UMUM BAHAN AJAR"), secBody(wPara("",{after:60}) + wBlocks(st.deskripsi, {jc:"both", ind:{left:0}}) + wPara("",{after:120})));
+
+  /* C. Flowchart */
+  let C = wPara("",{after:60, keepNext:true});
+  if(imgs.flow){ const [fw, fh] = fitImg(imgs.flow.w, imgs.flow.h, Math.min(innerW, imgs.flow.w*15), maxImgH); C += wPara(addImage(imgs.flow.url, fw, fh), {jc:"center", after:160}); }
+  C += wBlocks(flowNarasiText(st), {jc:"left"}) + wPara("",{after:80});
+  rows.push(secHead("C.  ALUR INTERAKSI (FLOWCHART):"), secBody(C));
+
+  /* D. Rencana implementasi + jadwal */
+  let D = wPara("",{after:40}) + wBlocks(st.impl.teks, {jc:"both", ind:{left:360}}) + wPara("",{after:160});
+  const n = Math.max(1, Math.min(16, +st.impl.minggu||8));
+  const jW = innerW - 120;
+  const wNo = Math.round(jW*0.09), wKeg = Math.round(jW*0.33), wWk = (jW - wNo - wKeg)/n;
+  const jWidths = [wNo, wKeg, ...Array(n).fill(wWk)];
+  const cc = (t,o={})=>wPara(wRun(t,{b:o.b}),{jc:o.jc||"left", before:40, after:40});
+  const jRows = [
+    {header:true, cantSplit:true, cells:[wCell(cc("No.",{b:1,jc:"center"}),{w:wNo,vMerge:"restart",vAlign:"center"}), wCell(cc("Kegiatan",{b:1,jc:"center"}),{w:wKeg,vMerge:"restart",vAlign:"center"}), wCell(cc("Minggu",{b:1,jc:"center"}),{w:wWk*n,span:n})]},
+    {header:true, cantSplit:true, cells:[wCell(wPara(""),{w:wNo,vMerge:"cont"}), wCell(wPara(""),{w:wKeg,vMerge:"cont"}), ...Array.from({length:n},(_,i)=>wCell(cc(String(i+1),{b:1,jc:"center"}),{w:wWk}))]}
+  ];
+  (st.impl.jadwal||[]).forEach((r,i)=>{
+    jRows.push({cantSplit:true, cells:[wCell(cc(String(i+1),{b:1}),{w:wNo,vAlign:"center"}), wCell(cc(r.kegiatan),{w:wKeg,vAlign:"center"}), ...Array.from({length:n},(_,k)=>wCell(cc((r.w||[]).includes(k+1)?"X":"",{b:1,jc:"center"}),{w:wWk,vAlign:"center"}))]});
+  });
+  D += wTable(jRows, jWidths, {ind:0}) + wPara("",{after:120});
+  rows.push(secHead("D.  RENCANA IMPLEMENTASI"), secBody(D));
+
+  /* E. Storyboard */
+  let E = wPara("",{after:60, keepNext:true});
+  const sW = innerW;
+  const sWidths = [sW*0.22, sW*0.27, sW*0.16, sW*0.35].map(Math.round);
+  const s12 = sWidths[0]+sWidths[1], s34 = sWidths[2]+sWidths[3], s234 = sWidths[1]+s34;
+  const P = (t,o={})=>wPara(wRunsInline(t,{b:o.b, sz:o.sz}), {jc:o.jc||"left", before:20, after:20});
+  const multi = (t, jc)=>{ const lines = String(t||"").split("\n").map(x=>x.trim()).filter(Boolean); if(lines.length<=1) return P(lines[0]||"",{jc}); return lines.map(l=>wPara(wRunsInline(l.replace(/^[-•]\s*/,"")),{num:2, jc, after:0})).join(""); };
+  st.scenes.forEach((s, si)=>{
+    const R = [];
+    R.push({cantSplit:true, cells:[wCell(P("STORYBOARD",{b:1,jc:"center",sz:24}),{w:sW,span:4,fill:COL.sbHead})]});
+    R.push({cantSplit:true, cells:[wCell(P("Scene:",{b:1,jc:"center"}),{w:sWidths[0],fill:COL.scene}), wCell(P("Treatment: (penjelasan pola interaktivitas yang terjadi pada layar)",{b:1,jc:"center"}),{w:s234,span:3,fill:COL.treat})]});
+    R.push({cantSplit:true, cells:[wCell(P(s.nama),{w:sWidths[0],fill:COL.scene}), wCell(P(s.treatment,{jc:"both"}),{w:s234,span:3,fill:COL.treat})]});
+    R.push({cantSplit:true, cells:[wCell(P("Visual:",{b:1,jc:"center"}),{w:sW,span:4,fill:COL.visual})]});
+    let vis = P(s.visual,{jc:"both"});
+    const im = imgs.scenes[si];
+    if(im){ const [iw, ih] = fitImg(im.w, im.h, sW-216, maxImgH-1200); vis += wPara("",{after:60}) + wPara(addImage(im.url, iw, ih), {jc:"center"}) + P(`Sumber : ${s.sumber||"-"}`,{b:1,jc:"center"}); }
+    else vis += wPara("",{after:60}) + P(`Sumber : ${s.sumber||"-"}`,{b:1,jc:"center"});
+    R.push({cells:[wCell(vis,{w:sW,span:4,fill:COL.visual})]});
+    R.push({cantSplit:true, cells:[wCell(P("Narasi/dialog:",{b:1,jc:"center",sz:26}),{w:sW,span:4,fill:COL.narasi})]});
+    R.push({cantSplit:true, cells:[wCell(P(`**${s.narasiLabel||NARASI_LABEL[0]}:** ${s.narasi||""}`)+wPara("",{after:300}),{w:sW,span:4,fill:COL.narasi})]});
+    R.push({cantSplit:true, cells:[wCell(P("Suara",{b:1,jc:"center"}),{w:s12,span:2,fill:COL.suara}), wCell(P("Interaksi (bisa lebih dari satu aksi)",{b:1,jc:"center"}),{w:s34,span:2,fill:COL.inter})]});
+    const suara = [["SFX", s.sfx],["Musik", s.musik],["Latar (ambience)", s.latar]];
+    INTERAKSI.forEach(([k,lab],i)=>{
+      const it = s.inter[k] || {on:false,t:""};
+      const val = it.on && it.t.trim() ? it.t : "Disabled (Tidak digunakan pada scene ini).";
+      const sl = suara[i] || ["",""];
+      R.push({cantSplit:true, cells:[
+        wCell(P(sl[0],{jc:"center"}),{w:sWidths[0],fill:COL.suara}),
+        wCell(P(sl[1]||""),{w:sWidths[1],fill:COL.suara}),
+        wCell(P(lab,{b:1,jc:"center"}),{w:sWidths[2],fill:COL.inter}),
+        wCell(it.on ? multi(val,"both") : P(val,{jc:"both"}),{w:sWidths[3],fill:COL.inter})
+      ]});
+    });
+    E += wTable(R, sWidths) + wPara("",{after:240});
+  });
+  if(!st.scenes.length) E += wPara(wRun("(Belum ada scene storyboard)",{i:true,color:"7F7F7F"}));
+  rows.push(secHead("E.  STORYBOARD"), secBody(E));
+
+  const body = wTable(rows, [W], {bsz:8}) + wPara("");
+  const sect = `<w:sectPr><w:pgSz w:w="${paper.w}" w:h="${paper.h}"/><w:pgMar w:top="${MARGIN}" w:right="${MARGIN}" w:bottom="${MARGIN}" w:left="${MARGIN}" w:header="708" w:footer="708" w:gutter="0"/><w:cols w:space="708"/></w:sectPr>`;
+  const NS = `xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"`;
+  const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:document ${NS}><w:body>${body}${sect}</w:body></w:document>`;
+
+  const W_NS = `xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"`;
+  const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:styles ${W_NS}><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:lang w:val="id-ID" w:eastAsia="en-US" w:bidi="ar-SA"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style><w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:uiPriority w:val="99"/><w:semiHidden/><w:unhideWhenUsed/><w:tblPr><w:tblInd w:w="0" w:type="dxa"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style></w:styles>`;
+  const lvl = (i, txt, left, hang, font)=>`<w:lvl w:ilvl="${i}"><w:start w:val="1"/><w:numFmt w:val="bullet"/><w:lvlText w:val="${txt}"/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="${left}" w:hanging="${hang}"/></w:pPr><w:rPr><w:rFonts w:ascii="${font}" w:hAnsi="${font}" w:hint="default"/></w:rPr></w:lvl>`;
+  const numberingXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:numbering ${W_NS}><w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="hybridMultilevel"/>${lvl(0,"●",720,360,"Calibri")}${lvl(1,"○",1440,360,"Calibri")}</w:abstractNum><w:abstractNum w:abstractNumId="1"><w:multiLevelType w:val="hybridMultilevel"/>${lvl(0,"•",340,240,"Calibri")}${lvl(1,"○",680,240,"Calibri")}</w:abstractNum><w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num><w:num w:numId="2"><w:abstractNumId w:val="1"/></w:num></w:numbering>`;
+  const settingsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:settings ${W_NS}><w:zoom w:percent="100"/><w:defaultTabStop w:val="720"/><w:characterSpacingControl w:val="doNotCompress"/><w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat></w:settings>`;
+  const docRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>${rels.join("")}</Relationships>`;
+  const ct = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`;
+  const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`;
+  const now = new Date().toISOString().replace(/\.\d+Z$/,"Z");
+  const core = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${xesc("Rancangan Bahan Ajar - "+(id.judul||""))}</dc:title><dc:creator>Generator Rancangan Bahan Ajar</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${now}</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">${now}</dcterms:modified></cp:coreProperties>`;
+  const app = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Microsoft Office Word</Application></Properties>`;
+  return makeZip([
+    {name:"[Content_Types].xml", data:ct}, {name:"_rels/.rels", data:rootRels},
+    {name:"word/document.xml", data:documentXml}, {name:"word/styles.xml", data:stylesXml},
+    {name:"word/numbering.xml", data:numberingXml}, {name:"word/settings.xml", data:settingsXml},
+    {name:"word/_rels/document.xml.rels", data:docRels}, {name:"docProps/core.xml", data:core}, {name:"docProps/app.xml", data:app},
+    ...media
+  ]);
+}
+
+/* ============ UTILITAS ============ */
+const $ = (s, el=document)=>el.querySelector(s);
+const $$ = (s, el=document)=>[...el.querySelectorAll(s)];
+function uid(){ return Math.random().toString(36).slice(2,9); }
+function esc(s){ return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+function getPath(o, p){ return p.split(".").reduce((a,k)=>a==null?a:a[k], o); }
+function setPath(o, p, v){ const ks=p.split("."); const last=ks.pop(); const t=ks.reduce((a,k)=>a[k]??(a[k]={}), o); t[last]=v; }
+function joinID(arr){ arr = arr.filter(Boolean); if(arr.length<=1) return arr.join(""); return arr.slice(0,-1).join(", ")+" dan "+arr[arr.length-1]; }
+function slug(s){ return String(s||"").normalize("NFKD").replace(/[^\w\s-]/g,"").trim().replace(/\s+/g,"_").slice(0,60) || "Rancangan_Bahan_Ajar"; }
+function wordCount(s){ return (String(s||"").trim().match(/\S+/g)||[]).length; }
+
+function toast(msg, type=""){
+  const t = $("#toast"); const el = document.createElement("div");
+  el.className = "toast-item "+type; el.textContent = msg; t.appendChild(el);
+  setTimeout(()=>{ el.classList.add("out"); setTimeout(()=>el.remove(), 350); }, 3200);
+}
+function openModal({title, body, actions=[], wide=false, onOpen}){
+  const m = $("#modal");
+  m.innerHTML = `<div class="modal-card ${wide?"wide":""}" role="dialog" aria-modal="true"><div class="modal-head"><h3>${esc(title)}</h3><button class="icon-btn" data-close aria-label="Tutup">✕</button></div><div class="modal-body">${body}</div><div class="modal-foot"></div></div>`;
+  const foot = $(".modal-foot", m);
+  actions.forEach(a=>{ const b = document.createElement("button"); b.className = "btn "+(a.cls||""); b.textContent = a.label; b.onclick = ()=>a.onClick && a.onClick(b); foot.appendChild(b); });
+  if(!actions.length) foot.remove();
+  m.classList.remove("hidden");
+  $("[data-close]", m).onclick = closeModal;
+  m.onclick = (e)=>{ if(e.target===m) closeModal(); };
+  onOpen && onOpen(m);
+  return m;
+}
+function closeModal(){ const m=$("#modal"); m.classList.add("hidden"); m.innerHTML=""; if(window.__aiCtl){ try{window.__aiCtl.abort();}catch(e){} window.__aiCtl=null; } }
+function confirmBox(title, text, okLabel, onOk, danger){
+  openModal({title, body:`<p>${text}</p>`, actions:[{label:"Batal", cls:"ghost", onClick:closeModal},{label:okLabel, cls:danger?"danger":"primary", onClick:()=>{ closeModal(); onOk(); }}]});
+}
+async function copyText(text, btn){
+  let ok = false;
+  try{ await navigator.clipboard.writeText(text); ok = true; }catch(e){
+    const ta = document.createElement("textarea"); ta.value = text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select();
+    try{ ok = document.execCommand("copy"); }catch(_){}
+    ta.remove();
+  }
+  if(ok){ toast("Disalin ke clipboard","ok"); if(btn){ const o=btn.textContent; btn.textContent="✓ Disalin"; setTimeout(()=>btn.textContent=o,1600);} }
+  else toast("Gagal menyalin otomatis — blok teksnya lalu tekan Ctrl+C","warn");
+  return ok;
+}
+
+/* ============ KAPABILITAS (saat dibuka di Claude) ============ */
+const CAP = {sample:null, downloads:null, inClaude:false};
+const capReady = (async()=>{
+  if(!(window.claude && typeof window.claude.use==="function")) return;
+  CAP.inClaude = true;
+  try{
+    const [s, d] = await Promise.all([window.claude.use("sample").catch(()=>null), window.claude.use("downloads").catch(()=>null)]);
+    CAP.sample = s; CAP.downloads = d;
+  }catch(e){}
+  updateAIBadges();
+})();
+
+/* ============ STATE ============ */
+const LS_KEY = "generator-rba-v1";
+function newState(){
+  return {
+    v:1,
+    identitas:{judul:"", jenis:"Lab Maya", program:"", cakupan:"", kelas:"E|X", sasaran:"Siswa SMK Kelas X (Sepuluh)", extra:[], ide:""},
+    deskripsi:"",
+    flow:{outline:"", tema:"terang", narasiAuto:true, narasi:""},
+    impl:{model:MODEL_PEMBELAJARAN[0], target:80, teks:"", minggu:8, jadwal:defaultJadwal()},
+    scenes:[],
+    opsi:{kertas:"A4", kode:"", gaya:"semi-realistis"},
+    ui:{tab:"identitas"}
+  };
+}
+let S = newState();
+function normalize(st){
+  const base = newState();
+  const out = Object.assign(base, st||{});
+  out.identitas = Object.assign(newState().identitas, (st||{}).identitas||{});
+  out.flow = Object.assign(newState().flow, (st||{}).flow||{});
+  out.impl = Object.assign(newState().impl, (st||{}).impl||{});
+  out.opsi = Object.assign(newState().opsi, (st||{}).opsi||{});
+  out.ui = Object.assign(newState().ui, (st||{}).ui||{});
+  out.scenes = ((st||{}).scenes||[]).map(s=>{ const m = mkScene(); Object.assign(m, s); m.inter = Object.assign(mkScene().inter, s.inter||{}); m.id = s.id||uid(); return m; });
+  if(!Array.isArray(out.identitas.extra)) out.identitas.extra = [];
+  if(!Array.isArray(out.impl.jadwal)) out.impl.jadwal = defaultJadwal();
+  return out;
+}
+let saveWarned = false;
+const saveLocal = debounce(()=>{
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); $("#saveState").textContent = "Tersimpan otomatis ✓"; $("#saveState").classList.remove("warn"); }
+  catch(e){ $("#saveState").textContent = "Simpan proyek (.json) agar aman"; $("#saveState").classList.add("warn");
+    if(!saveWarned){ saveWarned=true; toast("Penyimpanan otomatis browser penuh (gambar besar). Gunakan Simpan Proyek (.json).","warn"); } }
+}, 700);
+function loadLocal(){ try{ const raw = localStorage.getItem(LS_KEY); if(raw) return normalize(JSON.parse(raw)); }catch(e){} return null; }
+function changed(){ $("#saveState").textContent = "Menyimpan…"; saveLocal(); schedulePreview(); }
+
+/* ============ TEKS: paragraf & butir ============ */
+function parseBlocks(txt){
+  const lines = String(txt||"").replace(/\r/g,"").split("\n");
+  const out = [];
+  for(const raw of lines){
+    if(!raw.trim()){ if(out.length && out[out.length-1].t!=="gap") out.push({t:"gap"}); continue; }
+    const m = raw.match(/^(\s*)[-•*]\s+(.*)$/);
+    if(m){ out.push({t:"li", lvl: m[1].length>=2?1:0, text:m[2]}); continue; }
+    out.push({t:"p", text: raw.trim()});
+  }
+  while(out.length && out[out.length-1].t==="gap") out.pop();
+  return out;
+}
+function inlineRuns(text){
+  const parts=[]; const re=/\*\*(.+?)\*\*/g; let last=0, m; const s=String(text??"");
+  while((m=re.exec(s))){ if(m.index>last) parts.push({t:s.slice(last,m.index)}); parts.push({t:m[1], b:true}); last=re.lastIndex; }
+  if(last<s.length) parts.push({t:s.slice(last)});
+  if(!parts.length) parts.push({t:""});
+  return parts;
+}
+function inlineHTML(text){ return inlineRuns(text).map(p=>p.b?`<b>${esc(p.t)}</b>`:esc(p.t)).join(""); }
+function blocksHTML(txt, cls=""){
+  const b = parseBlocks(txt);
+  let html = "", inList = false;
+  for(const x of b){
+    if(x.t==="li"){ if(!inList){ html += `<ul class="dl">`; inList=true; } html += `<li class="${x.lvl?"l2":""}">${inlineHTML(x.text)}</li>`; continue; }
+    if(inList){ html += `</ul>`; inList=false; }
+    if(x.t==="gap") html += `<div class="gap"></div>`; else html += `<p class="${cls}">${inlineHTML(x.text)}</p>`;
+  }
+  if(inList) html += `</ul>`;
+  return html;
+}
+
+/* ============ FLOWCHART ============ */
+function parseOutline(src, rootLabel){
+  const root = {label: rootLabel||"Beranda", link:null, children:[]};
+  const stack = [{node:root, indent:-1}];
+  String(src||"").replace(/\t/g,"  ").split("\n").forEach(line=>{
+    if(!line.trim()) return;
+    const indent = line.match(/^ */)[0].length;
+    let text = line.trim().replace(/^[-•*]\s+/,"");
+    let link = null; const m = text.match(/^(.*?)\s*(?:->|→|=>)\s*(.+)$/);
+    if(m){ text = m[1].trim(); link = m[2].trim(); }
+    text = text.replace(/^\[(.*)\]$/,"$1"); if(link) link = link.replace(/^[\[(](.*)[\])]$/,"$1");
+    const node = {label:text||"…", link, children:[]};
+    while(stack.length>1 && stack[stack.length-1].indent >= indent) stack.pop();
+    stack[stack.length-1].node.children.push(node);
+    stack.push({node, indent});
+  });
+  if(root.children.length===1) return root.children[0];
+  return root;
+}
+function treeToOutline(node, depth=0){
+  if(!node) return "";
+  if(Array.isArray(node)) return node.map(n=>treeToOutline(n, depth)).filter(Boolean).join("\n");
+  if(typeof node==="string") return "  ".repeat(depth)+node;
+  const label = String(node.label||node.nama||node.title||node.judul||"").trim();
+  const link = node.link||node.tautan||node.tujuan;
+  const line = "  ".repeat(depth) + label + (link? " -> "+String(link).trim() : "");
+  const kids = (node.children||node.anak||node.sub||[]).map(c=>treeToOutline(c, depth+1)).filter(Boolean);
+  return [line, ...kids].join("\n");
+}
+function describeNode(g){
+  let s = g.label;
+  if(g.link) s += `, yang terhubung ke ${g.link}`;
+  if(g.children.length) s += (g.link?", dan ":": ") + "terdiri dari " + joinID(g.children.map(c=>c.link?`${c.label} (terhubung ke ${c.link})`:c.label));
+  return s + ".";
+}
+function flowNarasiAuto(st){
+  if(!st.flow.outline.trim()) return "";
+  const root = parseOutline(st.flow.outline, st.identitas.judul||"Beranda");
+  const kids = root.children, n = kids.length;
+  if(!n) return "";
+  const pos = n===3?["Atas","Tengah","Bawah"]: n===2?["Atas","Bawah"]: n===1?["Utama"]: kids.map((_,i)=>String(i+1));
+  return kids.map((c,i)=>{
+    const head = `${i+1}. Cabang ${pos[i]}: ${c.label}${c.link?` (terhubung ke ${c.link})`:""}`;
+    let intro;
+    if(!c.children.length) intro = "Halaman ini tidak memiliki sub-menu.";
+    else if(n===1) intro = "Bagian ini memuat:";
+    else if(i===0) intro = "Bagian ini menjabarkan detail interaksi atau opsi yang tersedia langsung di halaman ini:";
+    else if(i===n-1) intro = "Bagian ini merupakan fase penutup atau evaluasi dari bahan ajar ini. Cabang ini terbagi menjadi:";
+    else intro = `Bagian ini merupakan inti yang berisi daftar materi atau aktivitas. Halaman ini memecah alur menjadi ${c.children.length} jalur (path) pembelajaran:`;
+    return [head, intro, ...c.children.map(g=>"- "+describeNode(g))].join("\n");
+  }).join("\n\n");
+}
+function flowNarasiText(st){ return st.flow.narasiAuto ? flowNarasiAuto(st) : st.flow.narasi; }
+
+let flowCache = {key:"", img:null};
+function wrapText(ctx, text, maxW){
+  const words = String(text).split(/\s+/); const lines=[]; let cur="";
+  for(const w of words){ const t = cur?cur+" "+w:w; if(ctx.measureText(t).width>maxW && cur){ lines.push(cur); cur=w; } else cur=t; }
+  if(cur) lines.push(cur); return lines.length?lines:[""];
+}
+function renderFlowImage(st){
+  if(!st.flow.outline.trim()) return null;
+  const key = st.flow.outline+"|"+st.flow.tema+"|"+st.identitas.judul;
+  if(flowCache.key===key) return flowCache.img;
+  const dark = st.flow.tema==="gelap";
+  const root = parseOutline(st.flow.outline, st.identitas.judul||"Beranda");
+  const SC = 2, FS = 13, LH = 17, PX = dark?2:10, PY = dark?3:6, GX = dark?54:46, GY = 9, MAXW = 210, LGAP = 40, M = 22;
+  const cv = document.createElement("canvas"); const ctx = cv.getContext("2d");
+  const font = (d)=> (d<=1 && !dark ? "bold " : "") + FS + "px Arial, Helvetica, sans-serif";
+  const cols = [];
+  (function measure(n, d){
+    n.d = d; ctx.font = font(d);
+    const lab = dark?`[${n.label}]`:n.label;
+    n.lines = wrapText(ctx, lab, MAXW); n.w = Math.max(...n.lines.map(l=>ctx.measureText(l).width)) + PX*2; n.h = n.lines.length*LH + PY*2;
+    if(n.link){ ctx.font = FS+"px Arial, Helvetica, sans-serif"; const ll = dark?`[${n.link}]`:n.link; n.llines = wrapText(ctx, ll, MAXW-20); n.lw = Math.max(...n.llines.map(l=>ctx.measureText(l).width)) + PX*2; n.lh = n.llines.length*LH + PY*2; }
+    cols[d] = Math.max(cols[d]||0, n.w + (n.link? LGAP + n.lw : 0));
+    n.children.forEach(c=>measure(c, d+1));
+  })(root, 0);
+  const colX = []; cols.forEach((w,d)=>{ colX[d] = d===0 ? M : colX[d-1] + cols[d-1] + GX; });
+  let cursor = M;
+  (function place(n){
+    n.x = colX[n.d];
+    if(!n.children.length){ const bh = Math.max(n.h, n.link?n.lh:0); n.y = cursor + bh/2; cursor += bh + GY; }
+    else { n.children.forEach((c,i)=>{ place(c); if(n.d===0 && i<n.children.length-1) cursor += 14; }); n.y = (n.children[0].y + n.children[n.children.length-1].y)/2; }
+  })(root);
+  const W = Math.ceil(colX[cols.length-1] + cols[cols.length-1] + M), H = Math.ceil(cursor - GY + M);
+  cv.width = W*SC; cv.height = H*SC; ctx.scale(SC, SC);
+  ctx.fillStyle = dark ? "#0E0F12" : "#FFFFFF"; ctx.fillRect(0,0,W,H);
+  ctx.textBaseline = "middle";
+  const line = dark ? "#E8E8E8" : "#8EA6C2";
+  function rr(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+  function arrow(x1,y,x2){ ctx.strokeStyle = dark?"#E8E8E8":"#B08900"; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x2-2,y); ctx.stroke(); ctx.fillStyle = ctx.strokeStyle; ctx.beginPath(); ctx.moveTo(x2,y); ctx.lineTo(x2-8,y-4.5); ctx.lineTo(x2-8,y+4.5); ctx.closePath(); ctx.fill(); }
+  (function edges(n){
+    n.children.forEach(c=>{
+      const x1 = n.x + n.w, y1 = n.y, x2 = c.x, y2 = c.y, mx = x1 + (x2-x1)*0.5;
+      ctx.strokeStyle = line; ctx.lineWidth = dark?1.1:1.6;
+      ctx.beginPath(); ctx.moveTo(x1+ (dark?4:0), y1); ctx.bezierCurveTo(mx, y1, mx, y2, x2, y2); ctx.stroke();
+      edges(c);
+    });
+    if(n.children.length && dark){ ctx.fillStyle="#FFFFFF"; ctx.beginPath(); ctx.arc(n.x+n.w+4, n.y, 3.2, 0, Math.PI*2); ctx.fill(); }
+  })(root);
+  const pal = [["#1F4E79","#1F4E79","#FFFFFF"],["#2E75B6","#2E75B6","#FFFFFF"],["#DEEBF7","#9DC3E6","#1F3864"],["#FFFFFF","#BFBFBF","#262626"]];
+  (function nodes(n){
+    const [fill, stroke, txt] = pal[Math.min(n.d,3)];
+    const top = n.y - n.h/2;
+    if(!dark){ rr(n.x, top, n.w, n.h, 6); ctx.fillStyle=fill; ctx.fill(); ctx.strokeStyle=stroke; ctx.lineWidth=1; ctx.stroke(); }
+    ctx.font = font(n.d); ctx.fillStyle = dark ? "#F2F2F2" : txt;
+    n.lines.forEach((l,i)=>ctx.fillText(l, n.x+PX, top+PY+LH*i+LH/2+0.5));
+    if(n.link){
+      const lx = n.x + n.w + LGAP, lt = n.y - n.lh/2;
+      arrow(n.x+n.w+ (dark?2:3), n.y, lx-4);
+      if(!dark){ rr(lx, lt, n.lw, n.lh, 6); ctx.fillStyle="#FFF2CC"; ctx.fill(); ctx.setLineDash([4,3]); ctx.strokeStyle="#D6A800"; ctx.stroke(); ctx.setLineDash([]); }
+      ctx.font = FS+"px Arial, Helvetica, sans-serif"; ctx.fillStyle = dark?"#F2F2F2":"#5C4400";
+      n.llines.forEach((l,i)=>ctx.fillText(l, lx+PX, lt+PY+LH*i+LH/2+0.5));
+    }
+    n.children.forEach(nodes);
+  })(root);
+  const img = {url: cv.toDataURL("image/png"), w:W, h:H};
+  flowCache = {key, img};
+  return img;
+}
+
+/* ============ PRATINJAU DOKUMEN ============ */
+const PH = (t="belum diisi")=>`<span class="ph">[${t}]</span>`;
+let previewTimer = null;
+function schedulePreview(){ clearTimeout(previewTimer); previewTimer = setTimeout(renderPreview, 160); }
+function renderPreview(){
+  const st = S, id = st.identitas;
+  const k = KELAS_OPSI.find(x=>x.v===id.kelas)||KELAS_OPSI[0];
+  const items = [["Judul", id.judul],["Jenis bahan ajar", id.jenis],["Program keahlian", id.program],["Cakupan Materi", id.cakupan],[`Sasaran pengguna (Fase ${k.fase})`, id.sasaran]]
+     .concat((id.extra||[]).filter(e=>e.label.trim()).map(e=>[e.label, e.value]));
+  const flow = renderFlowImage(st);
+  const n = Math.max(1, Math.min(16, +st.impl.minggu||8));
+  const jad = `<table class="jt"><thead><tr><th rowspan="2" style="width:9%">No.</th><th rowspan="2" style="width:33%">Kegiatan</th><th colspan="${n}">Minggu</th></tr><tr>${Array.from({length:n},(_,i)=>`<th>${i+1}</th>`).join("")}</tr></thead><tbody>${
+    (st.impl.jadwal||[]).map((r,i)=>`<tr><td class="b">${i+1}</td><td>${esc(r.kegiatan)||PH()}</td>${Array.from({length:n},(_,k2)=>`<td class="c b">${(r.w||[]).includes(k2+1)?"X":""}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  const sb = st.scenes.map((s,si)=>{
+    const rowsI = INTERAKSI.map(([kk,lab],i)=>{
+      const it = s.inter[kk]||{on:false,t:""};
+      const sl = [["SFX",s.sfx],["Musik",s.musik],["Latar (ambience)",s.latar]][i]||["",""];
+      const val = it.on && it.t.trim() ? it.t : "Disabled (Tidak digunakan pada scene ini).";
+      const lines = val.split("\n").map(x=>x.trim()).filter(Boolean);
+      const vh = it.on && lines.length>1 ? `<ul class="dl sm">${lines.map(l=>`<li>${inlineHTML(l.replace(/^[-•]\s*/,""))}</li>`).join("")}</ul>` : inlineHTML(val);
+      return `<tr><td class="suara c">${sl[0]}</td><td class="suara">${esc(sl[1]||"")}</td><td class="inter c b">${lab}</td><td class="inter j ${it.on?"":"dis"}">${vh}</td></tr>`;
+    }).join("");
+    return `<table class="sb" data-go="storyboard" data-scene="${s.id}">
+      <colgroup><col style="width:22%"><col style="width:27%"><col style="width:16%"><col style="width:35%"></colgroup>
+      <tr><td colspan="4" class="sbh">STORYBOARD</td></tr>
+      <tr><td class="scene c b">Scene:</td><td colspan="3" class="treat c b">Treatment: (penjelasan pola interaktivitas yang terjadi pada layar)</td></tr>
+      <tr><td class="scene">${esc(s.nama)||PH("nama scene")}</td><td colspan="3" class="treat j">${esc(s.treatment)||PH()}</td></tr>
+      <tr><td colspan="4" class="visual c b">Visual:</td></tr>
+      <tr><td colspan="4" class="visual"><div class="j">${esc(s.visual)||PH("deskripsi visual")}</div>
+        ${s.gambar?`<img class="sbimg" src="${s.gambar}" alt="">`:`<div class="imgph">🖼️ Gambar visual scene belum diunggah<br><small>Salin “Prompt Gambar” di editor → buat di ChatGPT/Gemini → unggah di sini</small></div>`}
+        <div class="c b">Sumber : ${esc(s.sumber||"-")}</div></td></tr>
+      <tr><td colspan="4" class="narasi c b big">Narasi/dialog:</td></tr>
+      <tr><td colspan="4" class="narasi tall"><b>${esc(s.narasiLabel)}:</b> ${esc(s.narasi)||PH()}</td></tr>
+      <tr><td colspan="2" class="suara c b">Suara</td><td colspan="2" class="inter c b">Interaksi (bisa lebih dari satu aksi)</td></tr>
+      ${rowsI}
+    </table>`;
+  }).join("");
+  const narasiFlow = flowNarasiText(st);
+  $("#paper").innerHTML = `<table class="outer">
+    <tr><td class="sech" data-go="identitas">A.&nbsp;&nbsp;IDENTITAS BAHAN AJAR:</td></tr>
+    <tr><td class="secb" data-go="identitas"><ul class="idl">${items.map(([l,v])=>`<li><div>${esc(l)}</div><div class="v">${esc(v)||PH()}</div></li>`).join("")}</ul></td></tr>
+    <tr><td class="sech" data-go="deskripsi">B.&nbsp;&nbsp;DESKRIPSI UMUM BAHAN AJAR</td></tr>
+    <tr><td class="secb" data-go="deskripsi">${st.deskripsi.trim()?blocksHTML(st.deskripsi,"j"):`<p>${PH("deskripsi umum bahan ajar")}</p>`}<div class="gap"></div></td></tr>
+    <tr><td class="sech" data-go="alur">C.&nbsp;&nbsp;ALUR INTERAKSI (FLOWCHART):</td></tr>
+    <tr><td class="secb" data-go="alur">${flow?`<img class="flowimg" src="${flow.url}" style="width:${flow.w}px" alt="Flowchart">`:`<p>${PH("bagan alur")}</p>`}${narasiFlow.trim()?blocksHTML(narasiFlow):""}<div class="gap"></div></td></tr>
+    <tr><td class="sech" data-go="implementasi">D.&nbsp;&nbsp;RENCANA IMPLEMENTASI</td></tr>
+    <tr><td class="secb" data-go="implementasi"><div class="indent">${st.impl.teks.trim()?blocksHTML(st.impl.teks,"j"):`<p>${PH("rencana implementasi")}</p>`}</div><div class="gap"></div>${jad}<div class="gap"></div></td></tr>
+    <tr><td class="sech" data-go="storyboard">E.&nbsp;&nbsp;STORYBOARD</td></tr>
+    <tr><td class="secb" data-go="storyboard">${sb || `<p>${PH("belum ada scene storyboard")}</p>`}</td></tr>
+  </table>`;
+  updateChecklist();
+  fitZoom();
+  const ft = $("#flowThumb"); if(ft){ ft.innerHTML = flow?`<img src="${flow.url}" alt="">`:`<span class="muted">Bagan akan tampil di sini.</span>`; }
+  const fn = $("#flowNarasiAutoView"); if(fn) fn.textContent = flowNarasiAuto(S) || "(Tulis bagan alur terlebih dahulu)";
+  const wc = $("#wcDeskripsi"); if(wc) wc.textContent = wordCount(S.deskripsi)+" kata";
+  const wi = $("#wcImpl"); if(wi) wi.textContent = wordCount(S.impl.teks)+" kata";
+}
+function fitZoom(){
+  const wrap = $("#paperWrap"), paper = $("#paper"); if(!wrap||!paper) return;
+  const pw = S.opsi.kertas==="A4" ? 794 : 816;
+  paper.style.width = pw+"px";
+  const mode = $("#zoomSel").value;
+  let z = mode==="fit" ? Math.min(1, (wrap.clientWidth-28)/pw) : +mode;
+  paper.style.zoom = z;
+  const ps = $("#pageStyle"); if(ps) ps.textContent = `@page{size:${S.opsi.kertas==="A4"?"A4":S.opsi.kertas==="F4"?"215.9mm 330.2mm":"letter"};margin:25.4mm}`;
+}
+
+/* ============ EDITOR: binding ============ */
+function fillBindings(){
+  $$("[data-bind]").forEach(el=>{
+    const v = getPath(S, el.dataset.bind);
+    if(el.type==="checkbox") el.checked = !!v; else el.value = v ?? "";
+  });
+  $("#flowNarasi").disabled = !!S.flow.narasiAuto;
+  $("#flowNarasiWrap").classList.toggle("is-auto", !!S.flow.narasiAuto);
+  renderExtra(); renderJadwal(); renderScenes();
+}
+function onBind(el){
+  const p = el.dataset.bind; let v = el.type==="checkbox" ? el.checked : el.value;
+  if(el.type==="number") v = el.value===""? "" : +el.value;
+  setPath(S, p, v);
+  if(p==="identitas.kelas"){ const k = KELAS_OPSI.find(x=>x.v===v); if(k){ S.identitas.sasaran = k.sasaran; $('[data-bind="identitas.sasaran"]').value = k.sasaran; } }
+  if(p==="flow.narasiAuto"){ $("#flowNarasi").disabled = !!v; $("#flowNarasiWrap").classList.toggle("is-auto", !!v); if(!v && !S.flow.narasi.trim()){ S.flow.narasi = flowNarasiAuto(S); $("#flowNarasi").value = S.flow.narasi; } }
+  if(p==="impl.minggu"){ S.impl.minggu = Math.max(1, Math.min(16, +v||8)); renderJadwal(); }
+  if(p==="opsi.kertas") flowCache.key="";
+  if(p==="identitas.judul") updateWelcome();
+  changed();
+}
+
+/* identitas tambahan */
+function renderExtra(){
+  const box = $("#extraList");
+  box.innerHTML = S.identitas.extra.map((e,i)=>`<div class="row-extra"><input placeholder="Label (mis. Mata Pelajaran)" data-ex="${i}" data-f="label" value="${esc(e.label)}"><input placeholder="Isi" data-ex="${i}" data-f="value" value="${esc(e.value)}"><button class="icon-btn" data-exdel="${i}" title="Hapus">🗑</button></div>`).join("");
+}
+
+/* jadwal */
+function renderJadwal(){
+  const n = Math.max(1, Math.min(16, +S.impl.minggu||8));
+  const box = $("#jadwalEditor");
+  box.innerHTML = `<div class="jed-scroll"><table class="jed"><thead><tr><th>No</th><th>Kegiatan</th>${Array.from({length:n},(_,i)=>`<th>${i+1}</th>`).join("")}<th></th></tr></thead><tbody>${
+    S.impl.jadwal.map((r,i)=>`<tr><td>${i+1}</td><td><textarea rows="2" data-jr="${i}" data-f="kegiatan">${esc(r.kegiatan)}</textarea></td>${Array.from({length:n},(_,k)=>`<td><input type="checkbox" data-jr="${i}" data-wk="${k+1}" ${(r.w||[]).includes(k+1)?"checked":""} aria-label="Minggu ${k+1}"></td>`).join("")}<td class="acts"><button class="icon-btn" data-jmove="${i}" data-dir="-1" title="Naik">↑</button><button class="icon-btn" data-jmove="${i}" data-dir="1" title="Turun">↓</button><button class="icon-btn" data-jdel="${i}" title="Hapus">🗑</button></td></tr>`).join("")
+  }</tbody></table></div>`;
+}
+
+/* storyboard */
+function sceneCard(s, i){
+  const inter = INTERAKSI.map(([k,lab])=>{ const it = s.inter[k]||{on:false,t:""};
+    return `<div class="irow ${it.on?"":"off"}"><label class="sw"><input type="checkbox" data-s="${s.id}" data-f="inter.${k}.on" ${it.on?"checked":""}><span>${lab}</span></label><textarea rows="${it.on?2:1}" data-s="${s.id}" data-f="inter.${k}.t" placeholder="${it.on?"Deskripsi interaksi (baris baru = aksi berikutnya)":"Tidak digunakan → tercetak “Disabled”"}" ${it.on?"":"disabled"}>${esc(it.t)}</textarea></div>`; }).join("");
+  return `<details class="scard" data-id="${s.id}" ${s.open?"open":""}>
+   <summary><span class="snum">${i+1}</span><span class="stitle">${esc(s.nama)||"Scene tanpa nama"}</span>${s.gambar?`<span class="chip ok">gambar ✓</span>`:`<span class="chip">tanpa gambar</span>`}
+     <span class="sacts"><button class="icon-btn" data-sact="up" title="Naik">↑</button><button class="icon-btn" data-sact="down" title="Turun">↓</button><button class="icon-btn" data-sact="dup" title="Duplikat">⧉</button><button class="icon-btn" data-sact="del" title="Hapus">🗑</button></span></summary>
+   <div class="sbody">
+     <label>Nama scene <input data-s="${s.id}" data-f="nama" value="${esc(s.nama)}" placeholder="Scene ${i+1}: …"></label>
+     <label>Treatment <small>(pola interaktivitas pada layar)</small><textarea rows="3" data-s="${s.id}" data-f="treatment">${esc(s.treatment)}</textarea></label>
+     <label>Deskripsi visual<textarea rows="3" data-s="${s.id}" data-f="visual">${esc(s.visual)}</textarea></label>
+     <div class="imgbox">
+       <div class="imgzone" tabindex="0" data-zone="${s.id}" title="Klik untuk memilih gambar, seret file ke sini, atau tempel (Ctrl+V)">${s.gambar?`<img src="${s.gambar}" alt="">`:`<div><b>Unggah gambar visual</b><br><small>klik, seret file, atau tempel (Ctrl+V)</small></div>`}</div>
+       <div class="imgacts">
+         <button class="btn sm" data-sact="prompt">🎨 Prompt Gambar AI</button>
+         <button class="btn sm ghost" data-sact="upload">⬆ Pilih Gambar</button>
+         ${s.gambar?`<button class="btn sm ghost" data-sact="rmimg">Hapus gambar</button>`:""}
+         <label class="mini">Sumber gambar <input data-s="${s.id}" data-f="sumber" value="${esc(s.sumber)}"></label>
+       </div>
+     </div>
+     <div class="grid-narasi"><label>Jenis narasi<select data-s="${s.id}" data-f="narasiLabel">${NARASI_LABEL.map(l=>`<option ${l===s.narasiLabel?"selected":""}>${l}</option>`).join("")}</select></label>
+     <label>Isi narasi/dialog<textarea rows="2" data-s="${s.id}" data-f="narasi">${esc(s.narasi)}</textarea></label></div>
+     <fieldset><legend>Suara</legend>
+       <label>SFX<input data-s="${s.id}" data-f="sfx" value="${esc(s.sfx)}"></label>
+       <label>Musik<input data-s="${s.id}" data-f="musik" value="${esc(s.musik)}"></label>
+       <label>Latar (ambience)<input data-s="${s.id}" data-f="latar" value="${esc(s.latar)}"></label>
+     </fieldset>
+     <fieldset><legend>Interaksi <small>(aktifkan yang digunakan)</small></legend>${inter}</fieldset>
+     <div class="scene-ai"><button class="btn sm ai ai-btn" data-sact="ai">✨ Lengkapi scene ini dengan AI</button></div>
+   </div></details>`;
+}
+function renderScenes(){
+  $("#sceneList").innerHTML = S.scenes.length ? S.scenes.map(sceneCard).join("") : `<div class="empty">Belum ada scene. Klik <b>⚡ Templat 4 Scene</b>, <b>✨ AI</b>, atau <b>+ Tambah Scene</b>.</div>`;
+  $("#sceneCount").textContent = S.scenes.length+" scene";
+  updateAIBadges();
+}
+function sceneById(id){ return S.scenes.find(s=>s.id===id); }
+
+/* gambar scene */
+function readImageFile(file){
+  return new Promise((res, rej)=>{
+    if(!file || !/^image\//.test(file.type)) return rej(new Error("Berkas bukan gambar"));
+    const fr = new FileReader();
+    fr.onload = ()=>{ const img = new Image(); img.onload = ()=>{
+        const MAX = 1600; let w = img.naturalWidth, h = img.naturalHeight; const sc = Math.min(1, MAX/w);
+        w = Math.round(w*sc); h = Math.round(h*sc);
+        const cv = document.createElement("canvas"); cv.width=w; cv.height=h; const c = cv.getContext("2d");
+        c.fillStyle="#fff"; c.fillRect(0,0,w,h); c.drawImage(img,0,0,w,h);
+        res({url: cv.toDataURL("image/jpeg", 0.86), w, h});
+      }; img.onerror = ()=>rej(new Error("Gambar tidak dapat dibaca")); img.src = fr.result; };
+    fr.onerror = ()=>rej(fr.error); fr.readAsDataURL(file);
+  });
+}
+async function setSceneImage(id, file){
+  const s = sceneById(id); if(!s) return;
+  try{ const r = await readImageFile(file); s.gambar = r.url; s.gw = r.w; s.gh = r.h; s.open = true; renderScenes(); changed(); toast("Gambar scene ditambahkan","ok"); }
+  catch(e){ toast(e.message||"Gagal membaca gambar","warn"); }
+}
+function imagePrompt(s){
+  const c = ctxOf(S); const gaya = GAYA_GAMBAR[S.opsi.gaya] || GAYA_GAMBAR["semi-realistis"];
+  return `Buatkan gambar mockup tampilan layar aplikasi pembelajaran interaktif, rasio 16:9 (landscape), resolusi tinggi.
+
+Konteks: ${c.jenis} "${c.judul}" untuk ${c.sasaranL}, program keahlian ${c.program}.
+Layar: ${s.nama || "Scene"}.
+Deskripsi visual: ${s.visual || "(lengkapi deskripsi visual)"}
+${s.narasi?`Teks yang tampil di layar: ${s.narasi}\n`:""}
+Gaya visual: ${gaya}.
+Ketentuan: seluruh tulisan berbahasa Indonesia dengan ejaan benar, singkat, dan mudah dibaca; hierarki informasi jelas (judul > tombol utama > keterangan); tombol aksi besar dan menonjol; ikon konsisten; tanpa watermark, tanpa logo merek, tanpa tokoh nyata. Pertahankan palet warna dan gaya yang sama dengan scene lain agar seluruh storyboard konsisten.`;
+}
+
+/* ============ TEMPLAT ============ */
+function needIdentity(){
+  if(!S.identitas.judul.trim()){ toast("Isi judul bahan ajar terlebih dahulu","warn"); goTab("identitas"); setTimeout(()=>$('[data-bind="identitas.judul"]').focus(),50); return true; }
+  return false;
+}
+function hasContent(part){
+  if(part==="deskripsi") return !!S.deskripsi.trim();
+  if(part==="flow") return !!S.flow.outline.trim();
+  if(part==="impl") return !!S.impl.teks.trim();
+  if(part==="scenes") return S.scenes.length>0;
+  if(part==="all") return ["deskripsi","flow","impl","scenes"].some(hasContent);
+  return false;
+}
+function applyTemplate(part){
+  if(needIdentity()) return;
+  const run = ()=>{
+    if(part==="deskripsi"||part==="all") S.deskripsi = tplDeskripsi(S);
+    if(part==="flow"||part==="all"){ S.flow.outline = tplFlow(S); flowCache.key=""; }
+    if(part==="impl"||part==="all"){ S.impl.teks = tplImpl(S); if(part==="all") { S.impl.minggu = 8; S.impl.jadwal = defaultJadwal(); } }
+    if(part==="scenes"||part==="all"){ const old = S.scenes; S.scenes = tplScenes(S); S.scenes.forEach((s,i)=>{ if(old[i]&&old[i].gambar){ s.gambar=old[i].gambar; s.gw=old[i].gw; s.gh=old[i].gh; s.sumber=old[i].sumber; } }); if(S.scenes[0]) S.scenes[0].open = true; }
+    fillBindings(); changed(); updateWelcome();
+    toast(part==="all" ? "Semua bagian terisi dari templat. Silakan sesuaikan." : "Bagian terisi dari templat","ok");
+  };
+  if(hasContent(part)) confirmBox("Ganti isi dengan templat?", "Isi yang sudah ada pada bagian ini akan diganti dengan teks templat. Gambar storyboard tetap dipertahankan.", "Ganti", run);
+  else run();
+}
+
+/* ============ AI ============ */
+const AI_SPEC = {
+  deskripsi: ()=>`"deskripsi": string — satu paragraf 130–180 kata yang menjelaskan bentuk bahan ajar, tampilan antarmuka (rasio 16:9), fitur utama dan pola interaksi dua arah pengguna, serta indikator progres dan umpan balik. Gaya bahasa seperti contoh: 'Bahan ajar "..." adalah ... yang mensimulasikan ...'.`,
+  flow: ()=>`"flowchart": objek pohon {"label": string, "link": string (opsional, halaman tujuan), "children": [objek yang sama]}. Akar = "Halaman Beranda (Menu Utama)" dengan tepat 3 cabang: (1) "Menu Beranda" berisi tombol-tombol (mis. Studi Kasus, Panduan, Mulai) — boleh memakai link; (2) halaman ikhtisar/inti berisi 3–4 topik atau jalur, masing-masing 2–3 sub-aktivitas berkode (a1, a2, b1, …) yang menyebut bentuk interaksinya; (3) halaman rangkuman & umpan balik. Label singkat (maks. 7 kata).`,
+  impl: ()=>`"implementasi": string — 2 paragraf dipisah baris kosong (\\n\\n): paragraf 1 tentang model pembelajaran ${S.impl.model} dan peran guru menjelaskan konsep di kelas; paragraf 2 tentang cara siswa mengakses (file index.html, tanpa internet), peran guru sebagai fasilitator, target capaian minimal ${S.impl.target}%, dan pemanfaatan umpan balik langsung untuk refleksi dan pengulangan.
+"jadwal": {"minggu": angka 6–10, "kegiatan": [{"nama": string, "minggu": [nomor minggu]}]} — 6–8 kegiatan pengembangan berurutan (desain UI/UX dan aset, pemrograman, audio, uji coba, revisi, pengemasan .zip < 25MB, uji coba terbatas pada siswa).`,
+  scenes: ()=>`"storyboard": array 4–6 scene berurutan mengikuti alur bahan ajar (scene pertama laman muka, scene terakhir evaluasi dan umpan balik). Tiap scene: {"nama": "Scene n: Nama Layar", "treatment": 1–2 kalimat pola interaktivitas, "visual": 2–3 kalimat deskripsi visual layar yang rinci (latar, posisi elemen, teks pada tombol dalam tanda kutip), "narasi": teks instruksional pada layar dalam tanda kutip, "sfx": string, "musik": string, "latar": string (suara ambience, "" jika tidak ada), "normal": string, "hover": string, "hit": string, "swipe": string, "show": string, "drag": string}. Isi interaksi dengan "" bila tidak digunakan pada scene tersebut; bila lebih dari satu aksi pisahkan dengan \\n.`
+};
+function aiHeader(){
+  const id = S.identitas; const k = KELAS_OPSI.find(x=>x.v===id.kelas)||KELAS_OPSI[0];
+  return `Anda adalah perancang media pembelajaran digital (instructional designer) untuk SMK di Indonesia (Kurikulum Merdeka). Susun bagian rancangan bahan ajar digital berikut untuk dokumen proposal/rancangan bahan ajar.
+
+IDENTITAS BAHAN AJAR
+- Judul: ${id.judul||"(belum ada — usulkan judul yang tepat pada kunci \"judul\")"}
+- Jenis bahan ajar: ${id.jenis}
+- Program keahlian: ${id.program||"-"}
+- Cakupan materi: ${id.cakupan||"-"}
+- Sasaran pengguna: ${id.sasaran} (Fase ${k.fase})${id.ide?`\n- Ide/konsep khusus dari guru: ${id.ide}`:""}
+
+KETENTUAN UMUM
+- Bahasa Indonesia baku, jelas, profesional, sesuai konteks SMK dan dunia kerja; konsisten antarbagian.
+- Bahan ajar berupa aplikasi web HTML5 satu halaman (SPA), rasio layar 16:9, dapat dijalankan tanpa internet.
+- Jangan memakai format Markdown di dalam nilai teks (tanpa **, #, atau tabel).`;
+}
+function aiContextExtra(parts){
+  let s = "";
+  if(!parts.includes("deskripsi") && S.deskripsi.trim()) s += `\n\nDESKRIPSI YANG SUDAH ADA (jadikan acuan):\n${S.deskripsi.trim()}`;
+  if(!parts.includes("flow") && S.flow.outline.trim()) s += `\n\nBAGAN ALUR YANG SUDAH ADA (indentasi = sub-menu, "->" = tautan):\n${S.flow.outline.trim()}`;
+  return s;
+}
+function buildAIPrompt(parts, forChat){
+  const keys = parts.map(p=>AI_SPEC[p]()).join("\n");
+  return `${aiHeader()}${aiContextExtra(parts)}
+
+TUGAS
+Buat bagian berikut sebagai satu objek JSON dengan kunci:
+${!S.identitas.judul.trim()?`"judul": string — usulan judul bahan ajar (maks. 9 kata).\n`:""}${keys}
+
+FORMAT JAWABAN
+${forChat?"Tampilkan jawaban dalam SATU blok kode ```json saja (tanpa penjelasan di luar blok) agar mudah disalin.":"Balas hanya dengan satu objek JSON valid, tanpa teks lain."}`;
+}
+function buildScenePrompt(i){
+  const s = S.scenes[i];
+  const others = S.scenes.map((x,k)=>`${k+1}. ${x.nama||"(tanpa nama)"}`).join("\n");
+  const cur = {nama:s.nama, treatment:s.treatment, visual:s.visual, narasi:s.narasi, sfx:s.sfx, musik:s.musik, latar:s.latar};
+  INTERAKSI.forEach(([k])=>cur[k]=s.inter[k].on?s.inter[k].t:"");
+  return `${aiHeader()}${aiContextExtra([])}
+
+DAFTAR SCENE STORYBOARD:
+${others}
+
+TUGAS
+Lengkapi dan perbaiki scene nomor ${i+1}. Isi saat ini (pertahankan gagasan yang sudah ada, lengkapi yang kosong, buat lebih rinci dan konsisten dengan alur):
+${JSON.stringify(cur, null, 1)}
+
+Balas hanya dengan satu objek JSON valid: {"scene": {"nama", "treatment", "visual", "narasi", "sfx", "musik", "latar", "normal", "hover", "hit", "swipe", "show", "drag"}} — semua bernilai string; isi "" untuk interaksi yang tidak digunakan; pisahkan beberapa aksi dengan \\n.`;
+}
+function extractJSON(text){
+  let t = String(text||"").trim();
+  const fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i); if(fence) t = fence[1].trim();
+  const a = t.indexOf("{"), b = t.lastIndexOf("}");
+  if(a<0||b<0) throw new Error("Tidak ditemukan objek JSON pada jawaban.");
+  t = t.slice(a, b+1);
+  try{ return JSON.parse(t); }
+  catch(e){ return JSON.parse(t.replace(/,\s*([}\]])/g,"$1").replace(/[“”]/g,'"')); }
+}
+function applyAI(obj, parts){
+  const done = [];
+  if(obj.judul && !S.identitas.judul.trim()){ S.identitas.judul = String(obj.judul).trim(); done.push("judul"); }
+  if(parts.includes("deskripsi") && obj.deskripsi){ S.deskripsi = String(obj.deskripsi).trim(); done.push("deskripsi"); }
+  if(parts.includes("flow") && obj.flowchart){ const o = typeof obj.flowchart==="string" ? obj.flowchart : treeToOutline(obj.flowchart); if(o.trim()){ S.flow.outline = o; flowCache.key=""; done.push("flowchart"); } }
+  if(parts.includes("impl")){
+    if(obj.implementasi){ S.impl.teks = String(obj.implementasi).replace(/\\n/g,"\n").trim(); done.push("implementasi"); }
+    const j = obj.jadwal;
+    if(j && Array.isArray(j.kegiatan) && j.kegiatan.length){
+      S.impl.minggu = Math.max(1, Math.min(16, +j.minggu || Math.max(...j.kegiatan.flatMap(x=>x.minggu||[1])) || 8));
+      S.impl.jadwal = j.kegiatan.map(x=>({kegiatan:String(x.nama||x.kegiatan||""), w:(Array.isArray(x.minggu)?x.minggu:[x.minggu]).map(Number).filter(n=>n>=1&&n<=S.impl.minggu)}));
+      done.push("jadwal");
+    }
+  }
+  if(parts.includes("scenes") && Array.isArray(obj.storyboard) && obj.storyboard.length){
+    const old = S.scenes;
+    S.scenes = obj.storyboard.map((o,i)=>{ const s = mkScene(o); if(old[i]&&old[i].gambar){ s.gambar=old[i].gambar; s.gw=old[i].gw; s.gh=old[i].gh; s.sumber=old[i].sumber; } return s; });
+    S.scenes[0].open = true; done.push("storyboard");
+  }
+  fillBindings(); changed(); updateWelcome();
+  return done;
+}
+function applySceneAI(i, obj){
+  const o = obj.scene || obj; const s = S.scenes[i]; if(!s) return;
+  const n = mkScene(o);
+  ["nama","treatment","visual","narasi","sfx","musik","latar"].forEach(k=>{ if(o[k]!=null) s[k]=n[k]; });
+  INTERAKSI.forEach(([k])=>{ if(o[k]!=null) s.inter[k]=n.inter[k]; });
+  s.open = true; renderScenes(); changed();
+}
+const PART_LABEL = {deskripsi:"Deskripsi umum", flow:"Flowchart (bagan alur)", impl:"Rencana implementasi & jadwal", scenes:"Storyboard"};
+function aiErrMsg(e){
+  const c = e && e.code;
+  if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(c)){ CAP.sample = null; updateAIBadges(); return "Fitur AI bawaan tidak diizinkan di tampilan ini. Gunakan cara salin prompt ke ChatGPT/Gemini."; }
+  if(c==="rate_limited") return "Terlalu banyak permintaan atau batas penggunaan tercapai. Coba lagi beberapa saat lagi.";
+  if(c==="invalid_json") return "Jawaban AI tidak terbaca sebagai JSON. Silakan coba lagi.";
+  if(c==="refused") return "AI tidak dapat memproses permintaan ini. Ubah identitas atau ide lalu coba lagi.";
+  if(c==="session_expired") return "Sesi berakhir. Silakan masuk ulang ke Claude.";
+  if(c==="prompt_too_large") return "Isi terlalu panjang untuk diproses sekaligus.";
+  return (e && e.message) ? "Gagal: "+e.message : "Terjadi gangguan koneksi. Silakan coba lagi.";
+}
+async function runClaude(parts){
+  const ctl = new AbortController(); window.__aiCtl = ctl;
+  const groups = parts.includes("scenes") && parts.length>1 ? [parts.filter(p=>p!=="scenes"), ["scenes"]] : [parts];
+  openModal({title:"✨ Claude sedang menyusun", body:`<div class="ai-run"><div class="spinner"></div><div><b id="aiStage">Menyiapkan…</b><div class="muted" id="aiProg">Menunggu persetujuan / sedang berpikir… (bisa 20–90 detik)</div></div></div><ol class="ai-steps">${groups.map((g,i)=>`<li id="aiG${i}">${g.map(p=>PART_LABEL[p]).join(", ")}</li>`).join("")}</ol>`,
+    actions:[{label:"Hentikan", cls:"ghost", onClick:()=>{ ctl.abort(); closeModal(); }}]});
+  const all = [];
+  try{
+    for(let gi=0; gi<groups.length; gi++){
+      const g = groups[gi];
+      $("#aiStage") && ($("#aiStage").textContent = `Tahap ${gi+1} dari ${groups.length}: ${g.map(p=>PART_LABEL[p]).join(", ")}`);
+      $("#aiG"+gi)?.classList.add("act");
+      const obj = await CAP.sample.json(buildAIPrompt(g,false), {signal:ctl.signal, cache:false, onText:({text})=>{ const el=$("#aiProg"); if(el) el.textContent = `Menulis… ${text.length.toLocaleString("id-ID")} karakter`; }});
+      all.push(...applyAI(obj||{}, g));
+      $("#aiG"+gi)?.classList.replace("act","ok");
+    }
+    closeModal(); toast("Selesai: "+(all.join(", ")||"tidak ada perubahan"),"ok");
+  }catch(e){
+    if(e && e.code==="cancelled") return;
+    closeModal(); openModal({title:"AI belum berhasil", body:`<p>${esc(aiErrMsg(e))}</p>${all.length?`<p class="muted">Bagian yang sudah terisi: ${esc(all.join(", "))}.</p>`:""}`, actions:[{label:"Pakai ChatGPT/Gemini", cls:"ghost", onClick:()=>{ closeModal(); openPromptModal(parts); }},{label:"Tutup", cls:"primary", onClick:closeModal}]});
+  }
+}
+async function runClaudeScene(i){
+  const ctl = new AbortController(); window.__aiCtl = ctl;
+  openModal({title:"✨ Melengkapi scene "+(i+1), body:`<div class="ai-run"><div class="spinner"></div><div><b>Claude sedang menulis…</b><div class="muted" id="aiProg">Menunggu / berpikir…</div></div></div>`, actions:[{label:"Hentikan", cls:"ghost", onClick:()=>{ctl.abort(); closeModal();}}]});
+  try{
+    const obj = await CAP.sample.json(buildScenePrompt(i), {signal:ctl.signal, cache:false, onText:({text})=>{ const el=$("#aiProg"); if(el) el.textContent=`Menulis… ${text.length} karakter`; }});
+    applySceneAI(i, obj||{}); closeModal(); toast("Scene "+(i+1)+" diperbarui","ok");
+  }catch(e){ if(e&&e.code==="cancelled") return; closeModal(); toast(aiErrMsg(e),"warn"); }
+}
+function openAIDialog(parts){
+  if(needIdentity()) return;
+  parts = parts || ["deskripsi","flow","impl","scenes"];
+  const allParts = ["deskripsi","flow","impl","scenes"];
+  const hasClaude = !!CAP.sample;
+  openModal({title:"✨ Isi otomatis dengan AI", wide:true, body:`
+    <p class="muted">AI menyusun isi berdasarkan identitas: <b>${esc(S.identitas.judul)}</b> — ${esc(S.identitas.jenis)}, ${esc(S.identitas.program||"program keahlian belum diisi")}.</p>
+    <div class="checks">${allParts.map(p=>`<label class="ck"><input type="checkbox" name="aiPart" value="${p}" ${parts.includes(p)?"checked":""}> ${PART_LABEL[p]}</label>`).join("")}</div>
+    <label>Ide / konsep khusus (opsional, membantu AI lebih tepat)<textarea id="aiIde" rows="3" placeholder="Contoh: ada karakter pemandu bernama Arsi, 5 surat acak, stempel DITERIMA, laci arsip A–Z">${esc(S.identitas.ide)}</textarea></label>
+    ${hasContent("all")?`<p class="note">⚠️ Bagian yang dicentang akan <b>diganti</b>. Gambar storyboard yang sudah diunggah tetap dipertahankan.</p>`:""}
+    ${hasClaude?`<p class="muted small">Claude akan meminta izin satu kali, lalu memakai kuota akun Claude Anda.</p>`:`<p class="muted small">AI bawaan hanya aktif saat generator dibuka di Claude. Di sini gunakan <b>salin prompt</b> ke ChatGPT, Gemini, atau Claude.</p>`}`,
+    actions:[
+      {label:"Salin prompt (ChatGPT/Gemini)", cls:hasClaude?"ghost":"primary", onClick:()=>{ const sel = getSel(); if(!sel) return; S.identitas.ide = $("#aiIde").value; changed(); closeModal(); openPromptModal(sel); }},
+      ...(hasClaude?[{label:"✨ Buat dengan Claude", cls:"ai", onClick:()=>{ const sel = getSel(); if(!sel) return; S.identitas.ide = $("#aiIde").value; fillBindings(); changed(); runClaude(sel); }}]:[])
+    ]});
+  function getSel(){ const sel = $$('input[name="aiPart"]:checked').map(x=>x.value); if(!sel.length){ toast("Pilih minimal satu bagian","warn"); return null; } return sel; }
+}
+function openPromptModal(parts){
+  const prompt = buildAIPrompt(parts, true);
+  openModal({title:"Isi otomatis lewat ChatGPT / Gemini / Claude", wide:true, body:`
+    <ol class="steps-mini"><li>Klik <b>Salin Prompt</b>, lalu tempel di ChatGPT, Gemini, atau Claude.</li><li>Salin seluruh blok kode JSON jawaban AI.</li><li>Tempel di kotak kedua, lalu klik <b>Terapkan</b>.</li></ol>
+    <label>Prompt <small>(${PART_LABEL_LIST(parts)})</small><textarea id="pmPrompt" rows="8" readonly>${esc(prompt)}</textarea></label>
+    <div class="row-right"><button class="btn sm" id="pmCopy">📋 Salin Prompt</button></div>
+    <label>Tempel jawaban AI (JSON) di sini<textarea id="pmAnswer" rows="7" placeholder='{"deskripsi": "...", ...}'></textarea></label>`,
+    actions:[{label:"Batal", cls:"ghost", onClick:closeModal},{label:"Terapkan", cls:"primary", onClick:()=>{
+      try{ const obj = extractJSON($("#pmAnswer").value); const done = applyAI(obj, parts); closeModal(); toast(done.length?"Diterapkan: "+done.join(", "):"Tidak ada bagian yang cocok pada JSON", done.length?"ok":"warn"); }
+      catch(e){ toast("JSON tidak valid: pastikan seluruh blok kode tersalin","warn"); }
+    }}],
+    onOpen:()=>{ $("#pmCopy").onclick = (ev)=>copyText(prompt, ev.target); }});
+}
+function PART_LABEL_LIST(parts){ return parts.map(p=>PART_LABEL[p]).join(", "); }
+function aiFor(part){
+  if(needIdentity()) return;
+  if(CAP.sample){ const go = ()=>runClaude([part]); if(hasContent(part)) confirmBox("Ganti dengan hasil AI?", `Isi bagian <b>${PART_LABEL[part]}</b> akan diganti oleh hasil Claude.`, "Lanjutkan", go); else go(); }
+  else openPromptModal([part]);
+}
+function updateAIBadges(){
+  $$(".ai-mode").forEach(el=>el.textContent = CAP.sample ? "Claude aktif" : "via salin prompt");
+  $$(".scene-ai").forEach(el=>el.style.display = CAP.sample ? "" : "none");
+}
+
+/* ============ EKSPOR ============ */
+async function saveBlob(filename, blob){
+  if(CAP.inClaude){ await Promise.race([capReady, new Promise(r=>setTimeout(r,2500))]); }
+  if(CAP.downloads){
+    try{ await CAP.downloads.save({filename, data:blob}); toast("Berkas disiapkan: "+filename,"ok"); return; }
+    catch(e){ if(e && e.code==="declined"){ toast("Penyimpanan dibatalkan"); return; } if(e && e.code==="rate_limited"){ toast("Tunggu sebentar lalu coba lagi","warn"); return; } }
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast("Mengunduh "+filename,"ok");
+}
+function baseName(){ return (S.opsi.kode.trim()? slug(S.opsi.kode)+"_" : "") + slug(S.identitas.judul||"Rancangan_Bahan_Ajar"); }
+async function exportDocx(){
+  try{
+    flowCache.key = ""; const flow = renderFlowImage(S);
+    const scenesImg = S.scenes.map(s=> s.gambar ? {url:s.gambar, w:s.gw||1600, h:s.gh||900} : null);
+    const blob = buildDocx(S, {flow, scenes:scenesImg});
+    await saveBlob(baseName()+".docx", blob);
+  }catch(e){ console.error(e); toast("Gagal membuat Word: "+e.message,"warn"); }
+}
+async function exportPDF(){
+  if(CAP.inClaude){
+    openModal({title:"Simpan sebagai PDF", body:`<p>Di dalam Claude, fitur cetak browser dibatasi. Pilih salah satu cara:</p><ol class="steps-mini"><li><b>Unduh Word</b>, buka di Microsoft Word/Google Docs, lalu <i>Save As → PDF</i> (hasil paling rapi).</li><li>Atau buka file <b>index.html</b> generator ini langsung di Chrome/Edge, lalu klik <b>Cetak / PDF</b>.</li></ol>`,
+      actions:[{label:"Tutup", cls:"ghost", onClick:closeModal},{label:"⬇ Unduh Word", cls:"primary", onClick:()=>{ closeModal(); exportDocx(); }}]});
+    return;
+  }
+  renderPreview(); setTimeout(()=>window.print(), 120);
+}
+async function exportJSON(){ await saveBlob(baseName()+".json", new Blob([JSON.stringify(S)], {type:"application/json"})); }
+function importJSON(file){
+  const fr = new FileReader();
+  fr.onload = ()=>{ try{ const o = JSON.parse(fr.result); if(!o.identitas) throw 0; S = normalize(o); flowCache.key=""; fillBindings(); changed(); updateWelcome(); goTab("identitas"); toast("Proyek dibuka","ok"); } catch(e){ toast("Berkas bukan proyek generator yang valid","warn"); } };
+  fr.readAsText(file);
+}
+
+/* ============ PEMERIKSAAN ============ */
+function updateChecklist(){
+  const box = $("#checklist"); if(!box) return;
+  const id = S.identitas; const items = [];
+  const add = (ok, t, tab)=>items.push({ok, t, tab});
+  add(!!id.judul.trim(), "Judul bahan ajar", "identitas");
+  add(!!id.program.trim(), "Program keahlian", "identitas");
+  add(!!id.cakupan.trim(), "Cakupan materi", "identitas");
+  add(wordCount(S.deskripsi)>=60, `Deskripsi umum (${wordCount(S.deskripsi)} kata, disarankan ≥ 60)`, "deskripsi");
+  const nodes = (S.flow.outline.match(/\S.*$/gm)||[]).length;
+  add(nodes>=4, `Bagan alur (${nodes} kotak)`, "alur");
+  add(!!flowNarasiText(S).trim(), "Narasi penjelasan bagan alur", "alur");
+  add(wordCount(S.impl.teks)>=40, "Rencana implementasi", "implementasi");
+  add(S.impl.jadwal.length>0 && S.impl.jadwal.every(r=>r.kegiatan.trim() && (r.w||[]).length), "Jadwal kegiatan (setiap baris punya minggu)", "implementasi");
+  add(S.scenes.length>=3, `Storyboard (${S.scenes.length} scene, disarankan ≥ 3)`, "storyboard");
+  S.scenes.forEach((s,i)=>{ if(!s.gambar) add(false, `Scene ${i+1} belum memiliki gambar visual`, "storyboard"); if(!s.treatment.trim()||!s.visual.trim()) add(false, `Scene ${i+1}: treatment/visual masih kosong`, "storyboard"); });
+  const okN = items.filter(x=>x.ok).length;
+  box.innerHTML = `<div class="prog"><div style="width:${Math.round(okN/items.length*100)}%"></div></div><p class="muted small">${okN} dari ${items.length} butir lengkap</p><ul>${items.map(x=>`<li class="${x.ok?"ok":"no"}" data-goto="${x.tab}">${x.ok?"✓":"•"} ${esc(x.t)}</li>`).join("")}</ul>`;
+  const badge = $("#doneBadge"); if(badge) badge.textContent = Math.round(okN/items.length*100)+"%";
+}
+
+/* ============ NAVIGASI ============ */
+const TABS = ["identitas","deskripsi","alur","implementasi","storyboard","ekspor"];
+function goTab(t){
+  S.ui.tab = t;
+  $$(".step").forEach(b=>b.classList.toggle("active", b.dataset.tab===t));
+  $$(".pane").forEach(p=>p.classList.toggle("active", p.dataset.pane===t));
+  $("#editor").scrollTop = 0;
+  if(window.innerWidth<=980) setMobile("form");
+  scrollPreviewTo(t);
+  saveLocal();
+}
+function scrollPreviewTo(t){
+  const wrap = $("#paperWrap"); const el = $(`#paper .sech[data-go="${t==="ekspor"?"identitas":t}"]`);
+  if(!wrap || !el) return;
+  const top = t==="ekspor" ? 0 : el.getBoundingClientRect().top - wrap.getBoundingClientRect().top + wrap.scrollTop - 12;
+  wrap.scrollTo({top: Math.max(0, top), behavior:"smooth"});
+}
+function setMobile(v){ document.body.dataset.mview = v; $$(".mswitch button").forEach(b=>b.classList.toggle("active", b.dataset.mv===v)); if(v==="preview") fitZoom(); }
+function updateWelcome(){ const w = $("#welcome"); if(w) w.style.display = (!S.identitas.judul.trim() && !S.scenes.length) ? "" : "none"; }
+
+/* ============ INISIALISASI ============ */
+function initStatic(){
+  $("#selJenis").innerHTML = JENIS_BAHAN_AJAR.map(([j])=>`<option>${j}</option>`).join("");
+  $("#selKelas").innerHTML = KELAS_OPSI.map(k=>`<option value="${k.v}">${k.label}</option>`).join("");
+  $("#dlProgram").innerHTML = PROGRAM_KEAHLIAN.map(p=>`<option value="${esc(p)}">`).join("");
+  $("#selModel").innerHTML = MODEL_PEMBELAJARAN.map(m=>`<option>${m}</option>`).join("");
+  $("#selGaya").innerHTML = Object.keys(GAYA_GAMBAR).map(k=>`<option value="${k}">${{"semi-realistis":"Semi-realistis 3D (seperti contoh)","flat":"Ilustrasi flat","isometrik":"Isometrik 3D lembut","kartun":"Kartun ceria","minimalis":"UI modern minimalis"}[k]}</option>`).join("");
+}
+function bindEvents(){
+  document.addEventListener("input", e=>{
+    const el = e.target;
+    if(el.dataset.bind){ onBind(el); return; }
+    if(el.dataset.ex!=null){ S.identitas.extra[+el.dataset.ex][el.dataset.f] = el.value; changed(); return; }
+    if(el.dataset.jr!=null){
+      const r = S.impl.jadwal[+el.dataset.jr];
+      if(el.dataset.wk){ const w = +el.dataset.wk; r.w = (r.w||[]).filter(x=>x!==w); if(el.checked) r.w.push(w); r.w.sort((a,b)=>a-b); }
+      else r.kegiatan = el.value;
+      changed(); return;
+    }
+    if(el.dataset.s){
+      const s = sceneById(el.dataset.s); if(!s) return;
+      const f = el.dataset.f; const v = el.type==="checkbox"?el.checked:el.value;
+      setPath(s, f, v);
+      if(/^inter\.\w+\.on$/.test(f)){ const row = el.closest(".irow"); row.classList.toggle("off", !v); const ta = $("textarea", row); ta.disabled = !v; ta.rows = v?2:1; ta.placeholder = v?"Deskripsi interaksi (baris baru = aksi berikutnya)":"Tidak digunakan → tercetak “Disabled”"; if(v) ta.focus(); }
+      if(f==="nama"){ const t = el.closest(".scard").querySelector(".stitle"); t.textContent = v||"Scene tanpa nama"; }
+      changed();
+    }
+  });
+  document.addEventListener("change", e=>{ const el=e.target; if(el.dataset.bind && (el.tagName==="SELECT"||el.type==="checkbox")) {/* sudah ditangani input */} });
+  document.addEventListener("click", e=>{
+    const t = e.target.closest("button, [data-go], [data-goto], .step, .imgzone");
+    if(!t) return;
+    if(t.classList.contains("step")){ goTab(t.dataset.tab); return; }
+    if(t.dataset.goto){ goTab(t.dataset.goto); return; }
+    if(t.dataset.go && !t.closest("button")){ goTab(t.dataset.go); const sid = t.closest("[data-scene]")?.dataset.scene; if(sid){ const s = sceneById(sid); if(s){ s.open = true; renderScenes(); setTimeout(()=>$(`.scard[data-id="${sid}"]`)?.scrollIntoView({block:"start", behavior:"smooth"}), 60); } } return; }
+    if(t.dataset.next){ const i = TABS.indexOf(S.ui.tab); goTab(TABS[Math.min(TABS.length-1, i+(+t.dataset.next))]); return; }
+    if(t.dataset.tpl){ applyTemplate(t.dataset.tpl); return; }
+    if(t.dataset.ai){ t.dataset.ai==="all" ? openAIDialog() : aiFor(t.dataset.ai); return; }
+    if(t.dataset.exdel!=null){ S.identitas.extra.splice(+t.dataset.exdel,1); renderExtra(); changed(); return; }
+    if(t.dataset.jdel!=null){ S.impl.jadwal.splice(+t.dataset.jdel,1); renderJadwal(); changed(); return; }
+    if(t.dataset.jmove!=null){ const i=+t.dataset.jmove, j=i+(+t.dataset.dir); if(j<0||j>=S.impl.jadwal.length) return; const a=S.impl.jadwal; [a[i],a[j]]=[a[j],a[i]]; renderJadwal(); changed(); return; }
+    if(t.classList.contains("imgzone")){ pickImage(t.dataset.zone); return; }
+    if(t.dataset.sact){
+      e.preventDefault(); e.stopPropagation();
+      const card = t.closest(".scard"); const id = card.dataset.id; const i = S.scenes.findIndex(s=>s.id===id); const s = S.scenes[i];
+      const act = t.dataset.sact;
+      if(act==="up"||act==="down"){ const j = i+(act==="up"?-1:1); if(j<0||j>=S.scenes.length) return; [S.scenes[i],S.scenes[j]]=[S.scenes[j],S.scenes[i]]; renderScenes(); changed(); }
+      if(act==="dup"){ const c = JSON.parse(JSON.stringify(s)); c.id = uid(); c.nama = s.nama+" (salinan)"; c.open=true; S.scenes.splice(i+1,0,c); renderScenes(); changed(); }
+      if(act==="del"){ confirmBox("Hapus scene?", `Scene <b>${esc(s.nama||i+1)}</b> akan dihapus.`, "Hapus", ()=>{ S.scenes.splice(i,1); renderScenes(); changed(); }, true); }
+      if(act==="upload") pickImage(id);
+      if(act==="rmimg"){ s.gambar=null; s.gw=s.gh=0; renderScenes(); changed(); }
+      if(act==="prompt"){ const p = imagePrompt(s); openModal({title:"🎨 Prompt gambar — "+(s.nama||"Scene "+(i+1)), wide:true, body:`<p class="muted small">Tempel ke ChatGPT (buat gambar), Gemini, atau generator gambar lain. Setelah jadi, unduh gambarnya lalu unggah/tempel pada kotak gambar scene ini.</p><label>Gaya visual <select id="pmGaya">${$("#selGaya").innerHTML}</select></label><textarea id="pmImg" rows="12" readonly>${esc(p)}</textarea>`, actions:[{label:"Tutup", cls:"ghost", onClick:closeModal},{label:"📋 Salin Prompt", cls:"primary", onClick:(b)=>copyText($("#pmImg").value, b)}], onOpen:()=>{ const g=$("#pmGaya"); g.value=S.opsi.gaya; g.onchange=()=>{ S.opsi.gaya=g.value; $("#selGaya").value=g.value; changed(); $("#pmImg").value = imagePrompt(s); }; }}); }
+      if(act==="ai"){ if(CAP.sample) runClaudeScene(i); else openPromptModal(["scenes"]); }
+      return;
+    }
+    switch(t.id){
+      case "btnContoh": confirmBox("Muat contoh proyek?", "Contoh <b>Simulasi Crimping Kabel UTP</b> (TJKT) akan menggantikan isi saat ini. Simpan proyek Anda dulu bila perlu.", "Muat Contoh", ()=>{ S = sampleState(); S.scenes[0].open=true; flowCache.key=""; fillBindings(); changed(); updateWelcome(); goTab("identitas"); toast("Contoh dimuat","ok"); }); break;
+      case "btnDocx": case "btnDocx2": exportDocx(); break;
+      case "btnPdf": exportPDF(); break;
+      case "btnJson": exportJSON(); break;
+      case "btnOpen": $("#fileJson").click(); break;
+      case "btnNew": confirmBox("Mulai proyek baru?", "Seluruh isi akan dikosongkan. Simpan proyek (.json) terlebih dahulu bila masih diperlukan.", "Kosongkan", ()=>{ S = newState(); flowCache.key=""; fillBindings(); changed(); updateWelcome(); goTab("identitas"); }, true); break;
+      case "btnAddExtra": S.identitas.extra.push({label:"",value:""}); renderExtra(); changed(); setTimeout(()=>$$("#extraList input").slice(-2)[0]?.focus(),30); break;
+      case "btnAddJadwal": S.impl.jadwal.push({kegiatan:"", w:[]}); renderJadwal(); changed(); break;
+      case "btnAddScene": { S.scenes.forEach(s=>s.open=false); const s = mkScene({nama:`Scene ${S.scenes.length+1}: `}); s.open=true; S.scenes.push(s); renderScenes(); changed(); setTimeout(()=>$(`.scard[data-id="${s.id}"]`)?.scrollIntoView({block:"start",behavior:"smooth"}),50); break; }
+      case "btnNarasiCopy": S.flow.narasiAuto=false; S.flow.narasi = flowNarasiAuto(S); fillBindings(); changed(); $("#flowNarasi").focus(); break;
+      case "btnCollapse": S.scenes.forEach(s=>s.open=false); renderScenes(); break;
+    }
+  });
+  $("#sceneList").addEventListener("toggle", e=>{ const d = e.target; if(d.classList && d.classList.contains("scard")){ const s = sceneById(d.dataset.id); if(s) s.open = d.open; } }, true);
+  $("#sceneList").addEventListener("dragover", e=>{ const z = e.target.closest(".imgzone"); if(z){ e.preventDefault(); z.classList.add("drag"); } });
+  $("#sceneList").addEventListener("dragleave", e=>{ const z = e.target.closest(".imgzone"); if(z) z.classList.remove("drag"); });
+  $("#sceneList").addEventListener("drop", e=>{ const z = e.target.closest(".imgzone"); if(!z) return; e.preventDefault(); z.classList.remove("drag"); const f = e.dataTransfer.files[0]; if(f) setSceneImage(z.dataset.zone, f); });
+  $("#sceneList").addEventListener("paste", e=>{ const z = e.target.closest(".imgzone"); if(!z) return; const it = [...(e.clipboardData?.items||[])].find(x=>x.type.startsWith("image/")); if(it){ e.preventDefault(); setSceneImage(z.dataset.zone, it.getAsFile()); } });
+  $("#fileImg").addEventListener("change", e=>{ const f = e.target.files[0]; if(f && pickTarget) setSceneImage(pickTarget, f); e.target.value=""; });
+  $("#fileJson").addEventListener("change", e=>{ const f = e.target.files[0]; if(f) importJSON(f); e.target.value=""; });
+  $("#zoomSel").addEventListener("change", fitZoom);
+  window.addEventListener("resize", debounce(fitZoom, 120));
+  $$(".mswitch button").forEach(b=>b.onclick=()=>setMobile(b.dataset.mv));
+  const ta = $("#flowOutline");
+  ta.addEventListener("keydown", e=>{
+    if(e.key!=="Tab") return; e.preventDefault();
+    const v = ta.value, s = ta.selectionStart, en = ta.selectionEnd;
+    const ls = v.lastIndexOf("\n", s-1)+1; const le = v.indexOf("\n", en); const end = le<0?v.length:le;
+    const block = v.slice(ls, end).split("\n");
+    const nb = block.map(l=> e.shiftKey ? l.replace(/^ {1,2}/,"") : "  "+l).join("\n");
+    ta.value = v.slice(0, ls) + nb + v.slice(end);
+    ta.selectionStart = ls; ta.selectionEnd = ls + nb.length;
+    onBind(ta);
+  });
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("#modal").classList.contains("hidden")) closeModal(); });
+}
+let pickTarget = null;
+function pickImage(id){ pickTarget = id; $("#fileImg").click(); }
+
+function init(){
+  initStatic();
+  const saved = loadLocal();
+  if(saved) S = saved;
+  fillBindings(); bindEvents(); updateWelcome();
+  goTab(S.ui.tab||"identitas");
+  renderPreview(); updateAIBadges();
+  setMobile("form");
+  $("#saveState").textContent = saved ? "Proyek terakhir dipulihkan ✓" : "Siap";
+}
+document.addEventListener("DOMContentLoaded", init);
+
+</script>
+</body>
+</html>
